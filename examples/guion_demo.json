@@ -1,0 +1,52 @@
+{
+  "topic": "El costo de oportunidad en decisiones cotidianas",
+  "title": "El costo invisible de una compra",
+  "description": "Una explicación original del costo de oportunidad y por qué elegir algo también significa renunciar a otras opciones. Ejemplos hipotéticos, no asesoramiento financiero.",
+  "language": "es-419",
+  "hook": "Cada compra tiene un precio que no aparece en la etiqueta.",
+  "scenes": [
+    {
+      "narration": "Cada compra tiene un precio que no aparece en la etiqueta. Es lo que dejás de hacer con ese dinero cuando elegís gastarlo de una manera y no de otra.",
+      "visual_type": "concept",
+      "headline": "El precio invisible",
+      "visual_label": "Cada elección descarta alternativas",
+      "visual_data": [
+        "opciones",
+        "decisión"
+      ]
+    },
+    {
+      "narration": "Imaginá que tenés un presupuesto hipotético para un fin de semana. Podés gastarlo en una salida o reservarlo para un objetivo que te importa más adelante.",
+      "visual_type": "comparison",
+      "headline": "Dos caminos",
+      "visual_label": "Ejemplo hipotético",
+      "visual_data": [
+        "Gastar hoy",
+        "Ahorrar"
+      ]
+    },
+    {
+      "narration": "Ninguna de las dos opciones es automáticamente incorrecta. Lo importante es reconocer que elegir una implica renunciar a la otra, y que cada persona valora cosas diferentes.",
+      "visual_type": "concept",
+      "headline": "No existe una única respuesta",
+      "visual_label": "Valor, contexto y prioridades",
+      "visual_data": [
+        "valor",
+        "contexto",
+        "prioridades"
+      ]
+    },
+    {
+      "narration": "La próxima vez que tomes una decisión económica, preguntate qué alternativa estás dejando pasar. Esa pregunta puede ayudarte a usar mejor recursos que siempre son limitados.",
+      "visual_type": "big_number",
+      "headline": "¿Qué estás dejando pasar?",
+      "visual_label": "Pensar antes de elegir",
+      "visual_data": [
+        "tiempo",
+        "dinero"
+      ]
+    }
+  ],
+  "disclaimer": "Contenido educativo general. No es asesoramiento financiero personalizado.",
+  "references": []
+}
