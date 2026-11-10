@@ -1,4 +1,4 @@
-# Implementación inicial (plan, no despliegue completado)
+# Implementación y desarrollo local (sin despliegue de producción)
 
 ## Requisitos
 Rocky Linux 9.8, Docker + Compose, SELinux Enforcing, Python >=3.11, FFmpeg/ffprobe, fuente TrueType con licencia y motor Piper + voz es_MX cuya licencia permita el uso previsto.
@@ -21,7 +21,7 @@ python -m fabrica.cli cards examples/guion_demo.json --output out/cards
 pytest -q
 ```
 
-No es un flujo de producción completo: los comandos anteriores validan guion y generan PNG. Todavía falta integrar llamadas reales GPT, TTS, render de MP4, QA semántico, orquestación y publicadores.
+No es un flujo de producción completo: los comandos anteriores validan guion y generan PNG. La Fase 1 añade pipeline local, adaptadores GPT/Piper y render MP4 (ver README y CODEX_PROGRESS.md). Falta validar los servicios reales e implementar QA semántico, orquestación y publicadores.
 
 ## Orquestación
 `deploy/compose.orchestration.yml` arranca n8n ligado exclusivamente a `127.0.0.1:5678`. Establecer `N8N_ENCRYPTION_KEY` por canal privado, fijar digest de la imagen antes de producción y no montar Docker socket en n8n.
