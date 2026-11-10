@@ -1,0 +1,16 @@
+# Solo arranque seguro básico del orquestador. NO implementa el pipeline completo.
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest # fijar digest antes de producción
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=America/Argentina/Cordoba
+      - TZ=America/Argentina/Cordoba
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?set_secret_in_env}
+      - N8N_DIAGNOSTICS_ENABLED=false
+    volumes:
+      - n8n_data:/home/node/.n8n
+volumes:
+  n8n_data:
