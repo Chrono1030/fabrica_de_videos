@@ -32,6 +32,10 @@ def save(path, data):
 
 
 def mock_script(topic):
+    if "ganar" in topic.lower() or "ingreso" in topic.lower():
+        from .demo_scripts import income_script
+
+        return income_script(topic)
     return VideoScript(
         topic=topic,
         title=topic[:100],
@@ -68,10 +72,10 @@ def mock_script(topic):
                     ["Estudio:2", "Descanso:1"],
                 ),
                 (
-                    "Antes de elegir, preguntate qué alternativa dejarás de lado y qué valor tiene para vos. El dinero es solo una parte de la comparación.",
+                    "En un ejemplo hipotético, dedicar una, dos o tres horas a estudiar deja tres, dos o una horas para descansar dentro de cuatro horas disponibles. Elegir exige reconocer esa alternativa.",
                     "Pensá en lo que resignás",
                     "line_chart",
-                    ["Inicio:1", "Después:2", "Final:3"],
+                    ["Estudiar 1h:3", "Estudiar 2h:2", "Estudiar 3h:1"],
                 ),
             ]
         ],
@@ -87,6 +91,8 @@ def produce(
     width=1080,
     height=1920,
     mock_seconds=1.0,
+    subtitle_style=None,
+    catalog_path=None,
 ):
     if mode not in ("mock", "real") or not topic.strip():
         raise ValueError("Modo o tema inválido")
@@ -96,12 +102,17 @@ def produce(
     root = Path(root)
     job = root / job_id
     job.mkdir(parents=True, exist_ok=True)
+    from .subtitle_style import SubtitleStyle
+
+    style = subtitle_style or SubtitleStyle()
     config = dict(
+        pipeline_version="1.5",
         topic=topic,
         mode=mode,
         width=width,
         height=height,
         mock_seconds=mock_seconds,
+        subtitle_style=style.config(),
         script_sha=digest(Path(script_path)) if script_path else None,
     )
     with (job / ".lock").open("w") as lock:
@@ -198,6 +209,14 @@ def produce(
             script = VideoScript.model_validate_json(script_file.read_text())
             if check(script):
                 raise ValueError("Guion bloqueado por reglas preliminares")
+            from .catalog import Catalog
+
+            catalog = Catalog(catalog_path or root / "editorial.sqlite3")
+            issues = catalog.review(job_id, script)
+            state["editorial_reasons"] = issues
+            save(path, state)
+            if issues:
+                raise ValueError("; ".join(issues))
             images = [
                 job / "cards" / f"scene_{i:02}.png"
                 for i in range(1, len(script.scenes) + 1)
@@ -233,11 +252,21 @@ def produce(
                 "RENDER",
                 [video],
                 lambda: compose(
-                    images, audios, durations, srt, video, width, height, script.scenes
+                    images,
+                    audios,
+                    durations,
+                    srt,
+                    video,
+                    width,
+                    height,
+                    script.scenes,
+                    style,
                 ),
             )
             state["render_inputs"] = inputs
-            state["quality"] = quality(video, width, height, sum(durations), srt)
+            state["quality"] = quality(
+                video, width, height, sum(durations), srt, style.burn
+            )
             if list(job.glob("*.partial.mp4")):
                 raise ValueError("Archivo incompleto presente")
             state.pop("error", None)
@@ -258,3 +287,25 @@ def produce(
             }
             event("BLOCKED")
             raise
+
+
+def produce_auto(catalog_path, root=Path("out/jobs"), job_id=None, **kwargs):
+    from .catalog import Catalog
+
+    catalog = Catalog(catalog_path)
+    catalog.seed()
+    job_id = job_id or uuid.uuid4().hex
+    topic = catalog.reserve(job_id)
+    try:
+        job = produce(
+            topic["title"],
+            root=root,
+            job_id=job_id,
+            catalog_path=catalog_path,
+            **kwargs,
+        )
+        catalog.finish(job_id, "TECHNICALLY_READY", {"path": str(job)})
+        return job
+    except Exception as exc:
+        catalog.finish(job_id, "BLOCKED", {"error_type": type(exc).__name__})
+        raise

@@ -17,18 +17,33 @@ def timestamp(seconds):
 
 
 def subtitles(scenes, durations, target: Path, mock=False):
+    from .subtitle_style import cues
+
     entries, start = [], 0.0
-    for i, (scene, seconds) in enumerate(zip(scenes, durations), 1):
-        label = "[AUDIO SIMULADO] " if mock else ""
-        entries.append(
-            f"{i}\n{timestamp(start)} --> {timestamp(start + seconds)}\n{label}{scene.narration}\n"
-        )
+    for scene, seconds in zip(scenes, durations):
+        chunks = cues(("[AUDIO SIMULADO] " if mock else "") + scene.narration)
+        weights = [len(c.split()) for c in chunks]
+        cursor = start
+        for chunk, weight in zip(chunks, weights):
+            end = cursor + seconds * weight / sum(weights)
+            entries.append(
+                f"{len(entries) + 1}\n{timestamp(cursor)} --> {timestamp(end)}\n{chunk}\n"
+            )
+            cursor = end
         start += seconds
     target.write_text("\n".join(entries), encoding="utf-8")
 
 
 def compose(
-    images, audios, durations, srt, target, width=1080, height=1920, scenes=None
+    images,
+    audios,
+    durations,
+    srt,
+    target,
+    width=1080,
+    height=1920,
+    scenes=None,
+    style=None,
 ):
     if (
         width < 90
@@ -38,37 +53,56 @@ def compose(
         or height % 2
     ):
         raise ValueError("Se requiere resolución vertical 9:16 par")
+    from .subtitle_style import SubtitleStyle
+
+    style = style or SubtitleStyle()
     segments = []
     for i, (image, audio, seconds) in enumerate(zip(images, audios, durations)):
         segment = target.parent / f"segment_{i:02}.mp4"
         fade = min(0.15, seconds / 4)
         animation_fps = 24
         source = ["-loop", "1", "-i", str(image)]
-        if scenes and scenes[i].visual_type == "big_number" and scenes[i].visual_data:
+        if (
+            scenes
+            and scenes[i].visual_type in ("big_number", "bar_chart", "line_chart")
+            and scenes[i].visual_data
+        ):
             try:
                 number = float(scenes[i].visual_data[0])
             except ValueError:
                 number = None
-            if number is not None:
+            if number is not None or scenes[i].visual_type in (
+                "bar_chart",
+                "line_chart",
+            ):
                 import math
 
-                if not math.isfinite(number):
+                if number is not None and not math.isfinite(number):
                     raise ValueError("Número visual inválido")
                 from .cards import make_card
 
                 frames = target.parent / f"counter_{i:02}"
                 frames.mkdir(exist_ok=True)
-                for step in range(12):
+                frame_count = max(12, min(72, round(seconds * 12)))
+                for step in range(frame_count):
                     scene = scenes[i].model_copy(
-                        update={"visual_data": [f"{number * step / 11:g}"]}
+                        update={
+                            "visual_data": [f"{number * step / (frame_count - 1):g}"]
+                        }
+                        if number is not None
+                        else {}
                     )
                     make_card(
-                        scene, i + 1, len(scenes), frames / f"frame_{step:02}.png"
+                        scene,
+                        i + 1,
+                        len(scenes),
+                        frames / f"frame_{step:02}.png",
+                        progress=step / (frame_count - 1),
                     )
-                animation_fps = 12 / seconds
+                animation_fps = frame_count / seconds
                 source = [
                     "-framerate",
-                    str(12 / seconds),
+                    str(frame_count / seconds),
                     "-i",
                     str(frames / "frame_%02d.png"),
                 ]
@@ -104,8 +138,28 @@ def compose(
     listing = target.parent / "segments.txt"
     listing.write_text("".join(f"file '{p.name}'\n" for p in segments))
     partial = target.with_name("final.partial.mp4")
-    run(
-        [
+    # Ruta local fija: los identificadores no se interpolan en el filtro FFmpeg.
+    if style.burn:
+        local_srt = target.parent / "burn.ass"
+        rows = []
+        for block in srt.read_text().strip().split("\n\n"):
+            lines = block.splitlines()
+            if len(lines) < 3:
+                continue
+            start, end = lines[1].split(" --> ")
+
+            def ass_time(t):
+                return t[:8] + "." + t[9:11]
+
+            text = r"\N".join(lines[2:]).replace("{", "").replace("}", "")
+            rows.append(
+                f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Default,,0,0,0,,{text}"
+            )
+        local_srt.write_text(
+            "[Script Info]\nPlayResX: 1080\nPlayResY: 1920\nWrapStyle: 2\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\nStyle: Default,DejaVu Sans,44,&H00DDEEF4,&H00352112,1,2,1,2,110,110,320\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
+            + "\n".join(rows)
+        )
+        command = [
             "ffmpeg",
             "-y",
             "-v",
@@ -115,28 +169,58 @@ def compose(
             "-safe",
             "0",
             "-i",
-            str(listing),
-            "-i",
-            str(srt),
-            "-map",
-            "0:v",
-            "-map",
-            "0:a",
-            "-map",
-            "1:0",
-            "-c",
+            "segments.txt",
+            "-vf",
+            f"subtitles=burn.ass:original_size=1080x1920:force_style='{style.ass_style()}'",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "ultrafast",
+            "-threads",
+            "2",
+            "-c:a",
             "copy",
-            "-c:s",
-            "mov_text",
             "-movflags",
             "+faststart",
-            str(partial),
+            partial.name,
         ]
-    )
+        subprocess.run(
+            command, cwd=target.parent, check=True, capture_output=True, timeout=600
+        )
+    else:
+        run(
+            [
+                "ffmpeg",
+                "-y",
+                "-v",
+                "error",
+                "-f",
+                "concat",
+                "-safe",
+                "0",
+                "-i",
+                str(listing),
+                "-i",
+                str(srt),
+                "-map",
+                "0:v",
+                "-map",
+                "0:a",
+                "-map",
+                "1:0",
+                "-c",
+                "copy",
+                "-c:s",
+                "mov_text",
+                "-movflags",
+                "+faststart",
+                str(partial),
+            ]
+        )
     partial.replace(target)
 
 
-def quality(video, width, height, expected_duration, srt):
+def quality(video, width, height, expected_duration, srt, burned=True):
     data = json.loads(
         subprocess.check_output(
             [
@@ -161,8 +245,10 @@ def quality(video, width, height, expected_duration, srt):
         s["codec_type"] == "audio" and s["codec_name"] == "aac" for s in streams
     ):
         raise ValueError("Falta AAC")
-    if not any(s["codec_type"] == "subtitle" for s in streams):
+    if not burned and not any(s["codec_type"] == "subtitle" for s in streams):
         raise ValueError("Faltan subtítulos integrados")
+    if burned and any(s["codec_type"] == "subtitle" for s in streams):
+        raise ValueError("Pista duplicada con subtítulos quemados")
     if not srt.is_file() or "-->" not in srt.read_text():
         raise ValueError("Falta SRT")
     if abs(float(data["format"]["duration"]) - expected_duration) >= 0.5:

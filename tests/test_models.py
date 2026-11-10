@@ -1,9 +1,11 @@
 import json
 from pathlib import Path
+
 import pytest
-from fabrica.models import VideoScript
-from fabrica.editorial import check
+
 from fabrica.cards import create_cards
+from fabrica.editorial import check
+from fabrica.models import VideoScript
 
 EXAMPLE = Path(__file__).resolve().parents[1] / "examples" / "guion_demo.json"
 

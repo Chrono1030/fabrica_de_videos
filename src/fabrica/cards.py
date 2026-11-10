@@ -45,8 +45,42 @@ def draw_centered(d, words: str, y: int, f, fill, spacing: int = 25):
     return y
 
 
+def fitted_text(d, text, box, size, fill, font_path=None):
+    """Ajustar por ancho medido y altura; no truncar silenciosamente."""
+    x0, y0, x1, y1 = box
+    for point in range(size, 19, -1):
+        f = font(point, font_path)
+        lines, current = [], ""
+        for word in text.split():
+            candidate = (current + " " + word).strip()
+            if d.textlength(candidate, font=f) > x1 - x0 and current:
+                lines.append(current)
+                current = word
+            else:
+                current = candidate
+        lines.append(current)
+        line_height = point + 14
+        if len(lines) * line_height <= y1 - y0 and all(
+            d.textlength(line, font=f) <= x1 - x0 for line in lines
+        ):
+            for i, line in enumerate(lines):
+                d.text(
+                    ((W - d.textlength(line, font=f)) / 2, y0 + i * line_height),
+                    line,
+                    font=f,
+                    fill=fill,
+                )
+            return y0 + len(lines) * line_height
+    raise ValueError("Texto no cabe en zona gráfica")
+
+
 def make_card(
-    scene, index: int, total: int, target: Path, font_path: str | None = None
+    scene,
+    index: int,
+    total: int,
+    target: Path,
+    font_path: str | None = None,
+    progress: float = 1.0,
 ):
     image = Image.new("RGB", (W, H), NAVY)
     d = ImageDraw.Draw(image)
@@ -59,15 +93,17 @@ def make_card(
         font=font(42, font_path),
         fill=GOLD,
     )
-    y = draw_centered(d, scene.headline.upper(), 280, font(77, font_path), IVORY)
+    y = fitted_text(
+        d, scene.headline.upper(), (120, 270, 960, 610), 77, IVORY, font_path
+    )
     d.line((200, y + 50, W - 200, y + 50), fill=GOLD, width=6)
-    cy = max(y + 160, 900)
+    cy = 850
     if scene.visual_type == VisualType.bar_chart:
         items = scene.visual_data[:4]
         values = visual_values(items)
         for i, item in enumerate(items):
             x = 160 + i * 205
-            bar_height = int(400 * values[i] / max(max(values), 1))
+            bar_height = int(400 * progress * values[i] / max(max(values), 1))
             d.rounded_rectangle(
                 (x, cy + 220 - bar_height, x + 120, cy + 220), radius=15, fill=GOLD
             )
@@ -81,12 +117,15 @@ def make_card(
         points = [
             (
                 160 + i * 760 / max(len(values) - 1, 1),
-                cy + 200 - v * 350 / max(max(values, default=1), 1),
+                cy + 200 - progress * v * 350 / max(max(values, default=1), 1),
             )
             for i, v in enumerate(values)
         ]
         if len(points) > 1:
             d.line(points, fill=GOLD, width=10)
+        for i, item in enumerate(scene.visual_data):
+            x = points[i][0]
+            d.text((x - 55, cy + 245), item[:16], font=font(25, font_path), fill=IVORY)
         for x, y in points:
             d.ellipse((x - 12, y - 12, x + 12, y + 12), fill=IVORY)
     elif scene.visual_type == VisualType.diagram:
@@ -113,8 +152,7 @@ def make_card(
             (370, cy - 160, 710, cy + 180), fill=(31, 58, 84), outline=GOLD, width=8
         )
         d.text((425, cy - 15), "$  %", font=font(74, font_path), fill=GOLD)
-    draw_centered(d, scene.visual_label, 1410, font(51, font_path), MUTED)
-    d.text((95, 1740), "CONTENIDO EDUCATIVO", font=font(35, font_path), fill=MUTED)
+    fitted_text(d, scene.visual_label, (120, 1240, 960, 1330), 38, MUTED, font_path)
     target.parent.mkdir(parents=True, exist_ok=True)
     image.save(target)
     return target
