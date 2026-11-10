@@ -53,7 +53,7 @@ La narración real requiere instalar Piper y un modelo de voz con licencia adecu
 ## Fase 1: producción audiovisual local
 
 El pipeline local ya produce **MP4 reales H.264/AAC**, tarjetas, WAV, subtítulos
-SRT y pista de subtítulos integrada. Requiere Python >=3.11, FFmpeg/ffprobe con
+SRT y subtítulos cinematográficos quemados (o pista seleccionable opcional). Requiere Python >=3.11, FFmpeg/ffprobe con
 libx264 y una fuente DejaVu (paquetes Debian `ffmpeg fonts-dejavu-core`).
 No necesita Docker, servidor ni credenciales para modo MOCK.
 
@@ -72,8 +72,7 @@ pytest -q
 `--output` selecciona la raíz de trabajos (por defecto `out/jobs`), `--job-id`
 permite reanudar y `--script examples/guion_demo.json` utiliza un guion propio.
 Sin identificador se crea uno nuevo. `--mock-seconds` controla exclusivamente la
-longitud de los tonos de prueba. El guion MOCK siempre ilustra costo de oportunidad:
-el tema recibido es una etiqueta, no hay generación semántica para temas arbitrarios.
+longitud de los tonos de prueba. MOCK tiene dos plantillas originales: ahorro frente a ingresos (si el tema contiene ganar o ingreso) y costo de oportunidad para los demás temas. No genera contenido semántico arbitrario.
 
 Cada trabajo contiene `script.json`, `cards/`, WAV por escena, `subtitles.srt`,
 segmentos intermedios, `final.mp4` y `result.json`. El estado registra etapas,
@@ -82,7 +81,7 @@ bloqueos locales contra ejecuciones simultáneas del mismo trabajo. Los archivos
 verificados se reutilizan; los dañados se regeneran. No borrar el registro de
 presupuesto para reintentar llamadas reales.
 
-**MOCK genera tonos, no habla humana.** Los subtítulos llevan `[AUDIO SIMULADO]`.
+**MOCK genera tonos, no habla humana.** Cada escena identifica su audio como simulado en el primer fragmento de subtítulos.
 La duración final deriva de WAV medidos. El modo real bloquea duraciones fuera de
 60–90 segundos. Los controles técnicos no prueban exactitud, originalidad ni
 licencia editorial: `TECHNICALLY_READY` conserva `REQUIRES_REVIEW` y publicación
@@ -117,6 +116,71 @@ coordina presupuestos entre raíces de trabajos o máquinas diferentes.
 
 Visuales: números destacados, comparaciones, barras y líneas con datos explícitos
 `etiqueta:valor`, diagramas, iconos y fondos minimalistas. Los segmentos tienen
-zoom suave y fundido de entrada/salida. Subtítulos por escena, seleccionables en
-el reproductor; no hay alineación palabra por palabra ni subtítulos quemados.
+zoom suave y fundido de entrada/salida. Subtítulos fragmentados, quemados por defecto; no hay alineación fonética.
 Ver [arquitectura y progreso](docs/CODEX_PROGRESS.md).
+
+
+## Fase 1.5: subtítulos, catálogo y calidad editorial
+
+Los subtítulos SRT se dividen en fragmentos de hasta dos líneas (máximo 34
+caracteres y ancho tipográfico conservador), con tiempos proporcionales a la
+cantidad de palabras dentro de cada WAV. Es una aproximación, no alineación de voz.
+ASS conserva coordenadas 1080×1920 y FFmpeg incrusta texto marfil centrado,
+sin fondo opaco, con contorno oscuro. Nunca se añade simultáneamente una pista
+seleccionable cuando se queman los subtítulos.
+
+Opciones `produce`: `--subtitles burn|track`, `--subtitle-font "DejaVu Sans"`,
+`--subtitle-size 44`, `--subtitle-margin 320`, `--subtitle-color F4EEDD`,
+`--subtitle-outline 2`. Tamaños y márgenes usan unidades 1080×1920 y se escalan;
+se permiten tamaños 24–52 y margen inferior 200–400. Los gráficos terminan antes
+de la zona reservada. Las fuentes alternativas deben estar instaladas y requieren
+revisión visual. Se necesita FFmpeg con filtro `subtitles`/libass.
+
+Barras y líneas crecen desde cero hasta valores explícitos del guion, con hasta
+72 cuadros de animación por escena; números progresivos, zoom y fundidos completan
+el movimiento. Los títulos se ajustan por ancho y altura, sin truncarlos.
+
+### Selección automática
+
+```bash
+fabrica produce --auto --catalog out/editorial.sqlite3 --mode mock \
+  --width 180 --height 320 --job-id automatico-001
+```
+
+Se cargan 50 ideas originales en diez categorías. SQLite usa `BEGIN IMMEDIATE`
+para reservar un tema y asociarlo a un trabajo; índices únicos evitan doble
+asignación. Se priorizan temas disponibles por prioridad y antigüedad. Repetir
+el identificador conserva la reserva incluso tras un fallo; no lo libera para
+otro trabajo. El historial registra reserva y resultados. El catálogo y registro
+de guiones se comparten mediante `--catalog`; no usar bases diferentes si se
+necesita detectar duplicados entre ejecuciones.
+
+El selector es autónomo, pero MOCK solo dispone de las dos plantillas descritas:
+no valida generación editorial arbitraria. La repetición de una plantilla en
+otro trabajo queda bloqueada por el historial; usar REAL con guiones originales
+es una integración futura. `--script` permite desarrollar más guiones locales.
+Los controles bloquean referencias pendientes de verificación, cifras sin etiqueta
+hipotética, contenido repetitivo, guiones similares e incompatibilidades gráficas.
+Son heurísticas conservadoras, no pruebas de verdad ni originalidad jurídica.
+Un rechazo queda en `result.json`; publicación permanece deshabilitada.
+
+### Regenerar las dos demos
+
+```bash
+fabrica produce --topic '¿Por qué ganar más dinero no siempre significa ahorrar más?' \
+  --mode mock --mock-seconds 6 --job-id demo-a-final \
+  --output out/fase15/jobs --catalog out/fase15/editorial.sqlite3
+fabrica produce --topic 'El costo de oportunidad de nuestras decisiones' \
+  --mode mock --mock-seconds 6 --job-id demo-b-final \
+  --output out/fase15/jobs --catalog out/fase15/editorial.sqlite3
+```
+
+Ambas usan 1080×1920 y cuatro escenas de seis segundos con tonos. Los 24 segundos
+son solo para demostración técnica, no un video comercial con narración.
+Repetir los comandos reanuda cada trabajo. La versión del pipeline forma parte
+de la configuración; para trabajos de versiones anteriores elegir nuevos IDs.
+
+CI: `.github/workflows/tests.yml` instala Python 3.12, FFmpeg, fuentes y dependencias;
+ejecuta Ruff y pytest con MP4 reducidos reales. `workflow_dispatch` ofrece demos
+1080×1920 separadas. No usa APIs pagas. Ver resultados locales y límites en
+`docs/CODEX_PROGRESS.md`; la ejecución remota depende de GitHub Actions.

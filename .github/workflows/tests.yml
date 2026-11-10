@@ -1,0 +1,28 @@
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      full_resolution:
+        description: Generate 1080x1920 demos
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - run: pip install -e '.[dev]'
+      - run: ruff check src tests --select E4,E7,E9,F,I
+      - run: pytest -q
+      - if: ${{ inputs.full_resolution }}
+        run: |
+          fabrica produce --topic '¿Por qué ganar más dinero no siempre significa ahorrar más?' --mode mock --mock-seconds 6 --job-id demo-a
+          fabrica produce --topic 'El costo de oportunidad de nuestras decisiones' --mode mock --mock-seconds 6 --job-id demo-b

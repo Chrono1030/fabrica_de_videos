@@ -8,11 +8,12 @@
 
 ## Fase 1 — Producción automática [prioridad]
 - [ ] Adaptador GPT Responses API con credenciales reales, costos y presupuesto
-- [ ] Catálogo editorial persistente con selección anti-duplicados
+- [x] Catálogo SQLite de 50 temas con reservas atómicas e historial anti-duplicados
 - [ ] Verificación editorial independiente y trazabilidad de evidencia
 - [ ] Piper: normalización de números, segmentación y medición WAV
-- [ ] Composición FFmpeg con subtítulos y escenas sincronizadas
-- [ ] ffprobe y QA de decodificación, legibilidad y duración
+- [x] Composición FFmpeg con subtítulos cinematográficos y escenas sincronizadas
+- [x] ffprobe, decodificación y duración; fotogramas inspeccionados localmente
+- [ ] Validar legibilidad y alineación con voz Piper real
 - [ ] n8n Schedule Trigger, exclusión mutua, estados persistentes y reintentos
 
 ## Fase 2 — Publicación
@@ -30,3 +31,14 @@
 
 ## Futuro
 PostgreSQL, varios canales, nuevos componentes animados, videos largos y optimización editorial.
+
+
+## Fase 1.5 — calidad local
+- [x] SRT fragmentado y ASS quemado configurable, sin duplicación de pista
+- [x] Barras/líneas animadas, números progresivos y ajuste automático de textos
+- [x] Dos guiones MOCK originales y demos 1080×1920
+- [x] Controles deterministas con historial y motivos de rechazo
+- [x] Workflow Actions y 21 pruebas locales sin servicios externos
+- [ ] Confirmar ejecución remota de Actions cuando la API permita consultarla
+- [ ] Ampliar plantillas MOCK y validar generación editorial REAL
+- [ ] Fuentes verificadas, alineación fonética y revisión semántica independiente

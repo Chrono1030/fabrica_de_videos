@@ -1,4 +1,6 @@
-# Fase 1 — implementación y evidencia
+# Progreso de implementación
+
+## Fase 1 — registro histórico
 
 ## Implementado
 
@@ -47,3 +49,42 @@ producción completa con FFmpeg real. No requiere cuentas ni red externa.
   coordinación distribuida ni conciliación automática de llamadas inciertas.
 - Configuración reutilizable cloud no se modifica en esta tarea. No se accedió
   a Rocky Linux ni se solicitaron credenciales.
+
+
+## Fase 1.5 — completado en Codex Cloud
+
+- Subtítulos SRT fragmentados, ASS con coordenadas explícitas y quemado FFmpeg;
+  estilo y margen configurables, pista seleccionable alternativa sin duplicación.
+- Ajuste de textos por medidas, reserva inferior, barras/líneas animadas,
+  números progresivos y fundidos. Inspección visual de fotogramas realizada.
+- SQLite con 50 ideas originales, diez categorías, reserva atómica por trabajo,
+  persistencia, historial, prioridades y reintentos con la misma reserva.
+- Historial de guiones con comparación determinista; rechazo documentado de
+  similitud, repetición, datos no identificados y referencias no verificadas.
+- GitHub Actions configurado con pruebas y Ruff; test completo local: **21 pasan**.
+  Incluye concurrencia de 20 reservas, persistencia, selección automática completa,
+  diferencias de píxeles con subtítulos quemados, alternativa seleccionable y animación.
+- Demos A y B distintas: `out/fase15/jobs/demo-a-final/final.mp4` y
+  `out/fase15/jobs/demo-b-final/final.mp4`, 1080×1920, cuatro escenas y audio
+  simulado. Sus controles ffprobe/decodificación se guardan en `result.json`.
+
+### Límites vigentes
+
+No hay voz humana en MOCK, alineación fonética, verificación semántica independiente
+ni publicación. Las dos plantillas MOCK no cubren los 50 temas: nuevas producciones
+con la misma plantilla se bloquean por similitud. La revisión de referencias es
+conservadora: no se comprueban bibliografías por red y toda referencia requiere
+revisión. Las cifras solo se admiten automáticamente si se identifican como
+hipotéticas; las fuentes reales quedan para un flujo de verificación futuro.
+
+SQLite coordina procesos con la misma base local; no hay coordinación distribuida.
+Los fundidos pasan por el fondo oscuro, no hay transiciones solapadas. La animación
+usa hasta 72 cuadros intermedios por escena para limitar trabajo y disco. Los
+subtítulos se distribuyen por cantidad de palabras, sin sincronización fonética;
+fuentes alternativas requieren revisión manual. La seguridad de interfaz debe
+revisarse si una plataforma cambia sus superposiciones.
+
+La API de GitHub respondió `Forbidden`: no se pudo consultar/editar el cuerpo del
+PR ni confirmar resultados remotos de Actions. Publicar la rama actualiza los
+commits del PR que apunte a ella. El workflow está verificado localmente por sus
+comandos; no se presenta como una ejecución remota confirmada.
