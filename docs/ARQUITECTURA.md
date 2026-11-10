@@ -38,3 +38,26 @@ Los gráficos de cifras reales exigen fuente; usar ejemplos hipotéticos etiquet
 
 ## Operabilidad
 Uptime Kuma monitorea disponibilidad y heartbeat de **último trabajo exitoso**. SQLite/JSONL conserva el detalle editorial y económico; un HTTP 200 por sí solo no prueba que se esté publicando. Dimensionar CPU, RAM y disco antes de asumir que el servidor renderizará 1080×1920 con fluidez.
+
+
+## Componentes locales implementados (Fase 1.5)
+
+`cli → Catalog.reserve → pipeline.produce → Catalog.review → Pillow/TTS →
+SRT/ASS → FFmpeg → quality → Catalog.finish`.
+
+`catalog.py` usa tablas topics, history y scripts. UNIQUE(title normalizado) y
+UNIQUE(job_id), junto a BEGIN IMMEDIATE, hacen la reserva idempotente. Historial
+conserva eventos y motivos; BLOCKED retiene la asociación para reintento. El
+registro de guiones se inserta transaccionalmente tras controles deterministas.
+El estado audiovisual JSON conserva hashes por etapa; un trabajo reservado y su
+producción no forman una transacción larga: un corte se recupera por job_id.
+
+El estilo de subtítulos se serializa en la configuración del trabajo. SRT conserva
+fragmentos de dos líneas y ASS define PlayRes 1080×1920; burn y track son alternativas.
+El quemado requiere una segunda codificación de video. Los gráficos se sitúan
+por encima de la reserva inferior y los textos se ajustan por ancho real.
+
+Las transiciones listadas anteriormente describen el objetivo de producción.
+Actualmente el terminal técnico es TECHNICALLY_READY, con REQUIRES_REVIEW y
+publish_enabled=false. El QA editorial determinista no certifica hechos; todos
+los publicadores y la revisión semántica independiente siguen pendientes.

@@ -1,9 +1,14 @@
 """Contrato tipado entre el generador de guiones y el renderizador."""
+
 from enum import Enum
+
 from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class VisualType(str, Enum):
+    line_chart = "line_chart"
+    diagram = "diagram"
+    icon = "icon"
     concept = "concept"
     big_number = "big_number"
     comparison = "comparison"
