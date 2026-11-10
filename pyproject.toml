@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fabrica-de-videos"
+version = "0.1.0"
+description = "Prototipo de pipeline de videos educativos sobre economía"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.7,<3", "Pillow>=10,<13", "openai>=1.60,<4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.8,<1"]
+
+[project.scripts]
+fabrica = "fabrica.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
