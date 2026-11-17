@@ -18,6 +18,11 @@
     {
       "iteration": 3,
       "change": "Native QA: increase details to 28 px and disclaimer to 28 px, balance narrative wrapping, move explanatory ribbon label off routes, fade transfer exit; preserve integer sum at every transfer frame."
+    },
+    {
+      "iteration": 4,
+      "change": "Full decoded MP4 frame at 2.75 s confirmed moving-overlap warning. Delay ribbon explanatory note until 3.5 s so hero amount clears it. Re-render both engines from frozen sources.",
+      "evidence": "../renderer_advanced_iteration-3/givemotion/run-1/transition-2.75.png"
     }
   ],
   "hyperframes": [
@@ -33,8 +38,13 @@
     {
       "iteration": 3,
       "change": "Native QA: increase disclaimer to 28 px, shorter ring label stays 28 px after camera scale, balance narrative, stable mount IDs; preserve integer sum at every transfer frame."
+    },
+    {
+      "iteration": 4,
+      "change": "Raise transfer callout from 26 to 28 px after native text-floor warning. Re-render both engines from frozen sources."
     }
   ],
-  "fairness": "One initial implementation, one screenshot correction round and one native QA correction round per engine before measured runs. No stopwatch evidence for equal authoring time.",
-  "excluded": "No full editorial QA, phonetic timing, TTS work, paid APIs or publication"
+  "fairness": "Four logged authoring/technical correction iterations per engine. Initial four complete exports retained in out/renderer_advanced_iteration-3, excluded from final benchmark. Both engines re-rendered twice after the last correction; no exact authoring-time claim.",
+  "excluded": "No full editorial QA, phonetic timing, TTS work, paid APIs or publication",
+  "preliminary_outputs": "out/renderer_advanced_iteration-3 (four valid technical renders, superseded for legibility fixes)"
 }

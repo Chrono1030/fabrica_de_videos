@@ -91,6 +91,34 @@ def main():
             else "near-equivalent; inspect SSIM and frame comparisons",
             "manual_aesthetic_score": None,
         }
+        native = json.JSONDecoder().raw_decode(
+            (OUT / name / "run-1/check.log").read_text().lstrip()
+        )[0]
+        if name == "givemotion":
+            details["native_qa"] = {
+                k: native[k] for k in ("ok", "errors", "warnings", "issues")
+            }
+        else:
+            details["native_qa"] = {
+                k: v
+                for k, v in native.items()
+                if k
+                in (
+                    "ok",
+                    "lint",
+                    "runtime",
+                    "layout",
+                    "motion",
+                    "contrast",
+                    "craft",
+                    "audio",
+                )
+            }
+        details["capture_mode"] = (
+            "beginframe"
+            if name == "givemotion"
+            else "screenshot (native log: BeginFrame did not run)"
+        )
         report["engines"][name] = details
 
         def pair(key, scale=1):
@@ -103,6 +131,9 @@ def main():
             OUT / name / "run-1/contact-sheet.jpg", OUT / name / "contact-sheet.jpg"
         )
     gm, hf = [report["engines"][n] for n in ("givemotion", "hyperframes")]
+    assert gm["runs"][0]["storyboard_sha256"] == hf["runs"][0]["storyboard_sha256"], (
+        "Engines must share one storyboard"
+    )
     ratio = statistics.mean(
         r["render_wall_seconds"] for r in hf["runs"]
     ) / statistics.mean(r["render_wall_seconds"] for r in gm["runs"])
@@ -130,6 +161,7 @@ def main():
         "## Método y límites",
         "",
         "- 55,000 s, H.264, 1080×1920, 24 FPS, 1320 frames y una sola pista sin audio, comprobados con ffprobe y decodificación completa con -xerror. Los números finales y mensajes son idénticos entre motores.",
+        "- En esta máquina Linux/WSL sin GPU de hardware, givemotion utilizó BeginFrame y HyperFrames utilizó captura por screenshots (su log informa que BeginFrame no se ejecutó). Son rutas nativas distintas; no se sustituyó ningún motor.",
         "- CPU es user + system de GNU time. RAM árbol suma RSS simultáneo cada 50 ms y cuenta páginas compartidas por proceso. El máximo individual de GNU time se conserva aparte; no son la misma medida.",
         "- Tiempo de render excluye preparación de archivos, check nativo y QA posterior. Los comandos, versiones, hashes y logs están en cada manifest.json. La generación local de proyectos se mide aparte como build_wall_seconds; no hay un cronometraje confiable del trabajo manual de autoría.",
         "- Ambos motores usan un worker y preset nativo standard. No es un benchmark aislado de rasterizador con idéntico codificador. givemotion usa --no-cache; HyperFrames no usa --resume. No se limpia caché del SO. Check precalienta la primera corrida; la segunda vuelve a renderizar desde cero con archivos calientes. Dos muestras no permiten atribuir causalmente una diferencia temporal a caché.",
@@ -138,10 +170,14 @@ def main():
         "",
         "## Esfuerzo e iteraciones",
         "",
-        "Registro completo en iterations.json: un diseño inicial, una ronda de correcciones de capturas y una ronda de correcciones del QA nativo por motor antes de las mediciones. No hay evidencia de horas de autoría exactas; no se afirma igualdad cronometrada de esfuerzo. Ambos recibieron recursos semánticos equivalentes y corrección de problemas detectados.",
+        "Registro completo en iterations.json: cuatro iteraciones por motor (diseño, capturas, check nativo y corrección tras revisar el primer MP4). Las cuatro exportaciones previas se conservaron en out/renderer_advanced_iteration-3 y se excluyen de esta tabla final. No hay evidencia de horas de autoría exactas; no se afirma igualdad cronometrada de esfuerzo. Ambos recibieron recursos semánticos equivalentes y corrección de problemas detectados.",
         "",
     ]
     for name in ["givemotion", "hyperframes"]:
+        build = report["engines"][name]["runs"][0]["build_wall_seconds"]
+        lines.append(
+            f"- {name}: generación local del proyecto {build:.6f} s (una preparación compartida por sus dos renders). MP4: [{name} run 1]({name}/run-1/final.mp4), [run 2]({name}/run-2/final.mp4); [contact sheet]({name}/contact-sheet.jpg)."
+        )
         p = EXP / "templates" / f"{name}.html"
         details = report["engines"][name]
         details["template_lines"] = len(p.read_text().splitlines())
@@ -186,6 +222,15 @@ def main():
         json.loads((OUT / "visual-review.json").read_text())
         if (OUT / "visual-review.json").exists()
         else {"status": "pending agent frame inspection"}
+    )
+    viewer = OUT / "checks/viewer-smoke.json"
+    report["viewer_smoke"] = json.loads(viewer.read_text()) if viewer.exists() else None
+    if report["viewer_smoke"]:
+        lines.append(
+            f"Visor HTML: smoke test local Chrome {'PASS' if report['viewer_smoke']['pass'] else 'FAIL'}. Reproducción, pausa, salto, avance de frame, cambio de ejecución y PNG comprobados en Linux headless; Windows no se ejecutó directamente."
+        )
+    lines.append(
+        "Los avisos nativos completos se conservan en check.log y report.json. Las safe zones de plataformas de HyperFrames difieren del contrato propio; los holds, ausencia de audio y advertencia no-expect de la composición continua no cambian los siete intervalos del storyboard."
     )
     for key, value in checks.items():
         lines.append(f"{key}:\n```text\n{value.strip()}\n```")

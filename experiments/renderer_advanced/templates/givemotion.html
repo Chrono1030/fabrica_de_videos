@@ -10,7 +10,7 @@
 <header>MENTE Y CAPITAL · ARS</header><div id="chapter"></div><h1 id="heading"></h1>
 <svg id="graphic" viewBox="0 0 920 760">
 <text id="incomeLabel" x="460" y="45" font-size="30" class="muted">INGRESO MENSUAL</text><text id="income" x="460" y="118" font-size="78" font-weight="700">$1.200.000</text>
-<g id="ledger"><rect x="40" y="190" width="840" height="138" rx="18" fill="#273D54"/><g id="ribbon"><rect id="fixed" x="40" y="190" width="490" height="138" fill="#9CB0C4"/><rect id="variable" x="530" y="190" width="266" height="138" fill="#F6EEDB"/><rect id="savings" x="796" y="190" width="84" height="138" fill="#E6B864"/></g><text x="460" y="175" font-size="25" class="muted">CADA TRAMO REPRESENTA SU PARTE DEL TOTAL</text></g>
+<g id="ledger"><rect x="40" y="190" width="840" height="138" rx="18" fill="#273D54"/><g id="ribbon"><rect id="fixed" x="40" y="190" width="490" height="138" fill="#9CB0C4"/><rect id="variable" x="530" y="190" width="266" height="138" fill="#F6EEDB"/><rect id="savings" x="796" y="190" width="84" height="138" fill="#E6B864"/></g><text id="ribbonNote" x="460" y="175" font-size="25" class="muted">CADA TRAMO REPRESENTA SU PARTE DEL TOTAL</text></g>
 <g id="routes" fill="none" stroke="#9CB0C4" stroke-width="3"><path d="M285 328V387H165V430"/><path d="M663 328V387H470V430"/><path d="M838 328V387H775V430"/></g>
 <g id="travelDots" fill="#E6B864"><circle r="10"/><circle r="10"/><circle r="10"/></g><g id="cards"></g>
 <g id="transfer"><path d="M460 625Q610 740 755 625" fill="none" stroke="#E6B864" stroke-width="5"/><path d="M734 634L755 625L750 649" fill="none" stroke="#E6B864" stroke-width="5"/><rect id="coin" x="422" y="645" width="76" height="46" rx="15" fill="#E6B864"/><text x="610" y="740" font-size="35" class="gold">REASIGNÁS $30.000</text></g>
@@ -29,7 +29,7 @@ gm.onFrame('#film',t=>{
  $('#narrative').dataset.segment=s.narrative_segment_id;
  const unfold=smooth((t-1.2)/2.6),p=smooth((t-29.5)/5),shift=Math.round(30000*p),v=380000-shift,a=120000+shift;
  $('#income').setAttribute('y',118+180*(1-unfold));$('#income').setAttribute('font-size',78+16*(1-unfold));
- $('#incomeLabel').style.opacity=unfold;$('#ledger').style.opacity=unfold;
+ $('#ribbonNote').style.opacity=smooth((t-3.5)/.4);$('#incomeLabel').style.opacity=unfold;$('#ledger').style.opacity=unfold;
  $('#ribbon').style.transform=`scaleY(${.15+.85*unfold})`;$('#ribbon').style.transformOrigin='460px 259px';
  const sw=840*a/1200000;$('#variable').setAttribute('width',840*v/1200000);$('#savings').setAttribute('x',880-sw);$('#savings').setAttribute('width',sw);
  $('#routes').style.opacity=i===1?1:0;

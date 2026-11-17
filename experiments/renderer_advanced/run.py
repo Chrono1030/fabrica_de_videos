@@ -26,7 +26,9 @@ def source_hashes():
     paths = [
         *EXP.rglob("*.py"),
         *EXP.rglob("*.html"),
-        EXP / "config.json",
+        *EXP.rglob("*.mjs"),
+        *EXP.rglob("*.json"),
+        ROOT / "experiments/renderer_ab/measure.py",
         ROOT / "src/fabrica/visual_storyboard.py",
     ]
     return {str(p.relative_to(ROOT)): sha(p) for p in paths}
@@ -99,6 +101,7 @@ def run(name, repeat=2):
             manifest.update(adapter.render(project, directory))
             manifest.update(adapter.collect_metrics(directory))
             manifest.update(adapter.inspect(directory, storyboard))
+            assert source_hashes() == frozen, "Sources changed during render or QA"
             manifest["status"] = "PASS"
         except Exception as error:
             manifest.update(status="FAILED", error=str(error))
