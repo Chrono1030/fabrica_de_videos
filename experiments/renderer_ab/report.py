@@ -53,6 +53,19 @@ def main():
             "inputs_equal": stable,
             "manual_score": None,
         }
+        frame_rows = []
+        for index in [1, 2]:
+            frame_file = OUT / name / f"run-{index}/frames.md5"
+            frame_rows.append(
+                [
+                    row.split(",")[-1].strip()
+                    for row in frame_file.read_text().splitlines()
+                    if not row.startswith("#")
+                ]
+            )
+        details["identical_decoded_frames"] = sum(a == b for a, b in zip(*frame_rows))
+        details["compared_frames"] = len(frame_rows[0])
+        equality = f"{details['identical_decoded_frames']}/{details['compared_frames']}"
         native = OUT / name / "run-1/check.log"
         layout_summary = "Sin clipping en capturas; revisión humana pendiente"
         if native.exists():
@@ -96,8 +109,23 @@ def main():
             "givemotion": "HTML + gm.onFrame; 1 paquete npm; proyecto joven",
         }[name]
         lines.append(
-            f"| {name} | {runs[0]['engine_version']} | {'PASS ×2' if success else 'FAIL'} | {render} | {cpu} | {ram:.1f} | {size} | {same} | {layout_summary} | 4 escenas; nota humana pendiente | {integration} | {license_name} |"
+            f"| {name} | {runs[0]['engine_version']} | {'PASS ×2' if success else 'FAIL'} | {render} | {cpu} | {ram:.1f} | {size} | {equality} | {layout_summary} | 4 escenas; nota humana pendiente | {integration} | {license_name} |"
         )
+    ssim_log = OUT / "hyperframes/repro-ssim.log"
+    if ssim_log.exists():
+        summary = next(
+            (
+                row
+                for row in reversed(ssim_log.read_text().splitlines())
+                if "SSIM Y:" in row
+            ),
+            "",
+        )
+        report["engines"]["hyperframes"]["supplementary_ssim"] = summary
+        lines += [
+            "",
+            "HyperFrames no fue exacto a nivel de píxel (61/480 frames idénticos). La comparación suplementaria obtuvo SSIM global 0.999992, consistente con diferencias pequeñas; no se atribuye una causa sin investigarla. El SSIM no sustituye la revisión humana ni una prueba de retención. Comando y estadísticas por frame en hyperframes/repro-ssim*.log.",
+        ]
     lines += [
         "",
         "## Alcance de las mediciones",
@@ -149,7 +177,7 @@ def main():
     fastest = min(candidates)[1] if candidates else None
     report["fastest_measured"] = fastest
     lines.append(
-        f"El menor tiempo medio medido corresponde a **{fastest}**. Conservar Pillow/FFmpeg en producción hasta la revisión humana. Para seguir probando un candidato HTML, givemotion ofrece la integración más pequeña (sin dependencias npm runtime), mientras HyperFrames aporta lint y subcomposiciones con una superficie mayor. La adopción depende de una mejora visual confirmada por el propietario y de revisar las dependencias/licencias; estos datos no justifican por sí solos una migración."
+        f"El menor tiempo medio medido corresponde a **{fastest}**. Conservar Pillow/FFmpeg en producción hasta la revisión humana. Para seguir probando un candidato HTML, recomiendo provisionalmente givemotion: fue más rápido y consumió menos memoria que HyperFrames, repitió exactamente los 480 frames y ofrece la integración más pequeña (sin dependencias npm runtime). HyperFrames aporta lint y subcomposiciones con una superficie mayor. La adopción depende de una mejora visual confirmada por el propietario y de revisar las dependencias/licencias; estos datos no justifican por sí solos una migración."
     )
     lines += [
         "",
@@ -180,6 +208,7 @@ def main():
         json.dumps(report, indent=2, ensure_ascii=False) + "\n"
     )
     (OUT / "compare.md").write_text("\n".join(lines) + "\n")
+    (OUT / "artifact-paths.txt").touch()
     paths = sorted(
         str(p.resolve())
         for p in OUT.rglob("*")
