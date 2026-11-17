@@ -8,6 +8,15 @@ Propuesta visual: cerebro geométrico con curva económica; azul marino #142337,
 
 Opciones **provisionales**; disponibilidad de nombres, @handles y marcas no confirmada. Ninguna crea registros ni reserva nombres.
 
+## Alerta de distintividad — 16/11/2026
+
+**La marca preferida sigue siendo Mente y Capital, pero su adopción definitiva queda pendiente.** Una búsqueda pública encontró un podcast activo llamado **Mente y Capital** de NSC Asesores (México) desde 2025–2026, sobre economía/inversiones, publicado en Spotify/Apple Podcasts y promocionado con videos en YouTube. Es un posible conflicto de posicionamiento, confusión y derechos de marca; **la búsqueda no prueba registro marcario ni que `@MenteYCapital` esté ocupado**. No crear canal, reservar artes definitivos ni declarar exclusividad antes de verificar disponibilidad de handle, usos en la plataforma y registros marcarios pertinentes en INPI Argentina y jurisdicciones prioritarias. Informar al propietario y solicitar decisión de mantener nombre con diferenciación comprobada o elegir variante distintiva.
+
+Fuentes:
+- https://podcasts.apple.com/es/podcast/mente-y-capital/id1834233507
+- https://open.spotify.com/show/63ZVO7UQhBaoYrgSXV1Vam
+- https://mx.linkedin.com/company/nsc-asesores
+
 ## Opciones
 
 | # | Nombre | Handle propuesto | Logotipo | Portada / lema | Descripción breve |
