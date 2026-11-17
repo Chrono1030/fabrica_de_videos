@@ -18,7 +18,7 @@ Monetización cuando elegible: ingreso por contenido, RPM disponible, coste de i
 
 ## Viabilidad de ingresos pasivos y supuestos
 
-**Objetivo declarado por propietario:** generar un flujo de ingresos pasivos con mínima intervención rutinaria; no puede garantizarse monetización, admisión al YPP, distribución ni retorno. Tratar ingresos como escenario, nunca como entrada asegurada en el presupuesto personal.
+**Objetivo declarado por propietario:** generar un flujo de ingresos pasivos con mínima intervención rutinaria; la rentabilidad es un criterio de éxito del producto, **pero no puede garantizarse** monetización, admisión al YPP, distribución ni retorno. El sistema debe medir si el proyecto es viable económicamente en lugar de dar por hecho que las vistas se convierten en dinero. Tratar ingresos como escenario, nunca como entrada asegurada en el presupuesto personal.
 
 Desde el primer video registrar: costes API y TTS/hosting, coste de generación/revisión, horas humanas, publicaciones, visualizaciones cualificadas y suscriptores. Tras admisión a YPP: ingresos reales y RPM/ingresos por mil vistas **elegibles**; antes de YPP ingresos publicitarios reconocidos = 0.
 
@@ -29,6 +29,12 @@ Modelo de escenarios con variables configurables, no cifras de RPM inventadas:
 - Probar escenarios pesimista, base y optimista con supuestos declarados y sensibilidad; no confundir vistas brutas con vistas elegibles.
 
 Puertas: validación técnica, calidad/originalidad, legalidad de activos, 30 videos piloto y revisión económica. Si el canal no crece o el costo por video es insostenible, adaptar temas/duración/distribución o suspender producción; escalar solo con evidencia. Las reglas de YouTube pueden cambiar y deben revisarse antes de lanzamiento y antes de monetizar.
+
+## Cambio de monetización Shorts anunciado para 2027
+
+YouTube anuncia que **a partir del 1 de febrero de 2027**, para participar mensualmente en el reparto de ingresos publicitarios de Shorts y YouTube Premium será necesario alcanzar **10 millones de visualizaciones cualificadas de Shorts en los últimos 90 días**, medidos sobre la ventana que la plataforma especifica para el mes correspondiente. Las condiciones futuras deben revisarse nuevamente al lanzar y antes de activar monetización. Esto hace importante no asumir ingresos estables únicamente con un video diario de Shorts: medir probabilidad de alcanzar el umbral y considerar formatos largos originales como una vía de diversificación editorial en una fase posterior, sin ampliar el MVP hoy.
+
+Fuentes oficiales: https://support.google.com/youtube/answer/12504220 y https://support.google.com/youtube/answer/72851
 
 ## Piloto
 
