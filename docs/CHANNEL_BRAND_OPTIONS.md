@@ -1,5 +1,11 @@
 # Marca, cuenta y audiencia del canal
 
+**DECISIÓN APROBADA:** nombre público del canal = **Mente y Capital**. Handle preferido = `@MenteYCapital`, **pendiente de verificar disponibilidad y posibles conflictos de marca**. El logo, banner y descripción son propuestas a validar antes de crear la cuenta; no declarar cuentas ni registros creados.
+
+Propuesta visual: cerebro geométrico con curva económica; azul marino #142337, marfil #F5E9D0, acento oro #E3B86A. Banner: «Entendé el dinero. Decidí mejor». Descripción corta: «Ideas originales de economía, comportamiento financiero y productividad explicadas con ejemplos cotidianos. Comprendé mejor tus decisiones sobre dinero». Voz de marca clara, precisa, sencilla, no sensacionalista.
+
+
+
 Opciones **provisionales**; disponibilidad de nombres, @handles y marcas no confirmada. Ninguna crea registros ni reserva nombres.
 
 ## Opciones
@@ -12,7 +18,7 @@ Opciones **provisionales**; disponibilidad de nombres, @handles y marcas no conf
 | 4 | Nexo Económico | @NexoEconomico | Nodos unidos en una moneda | Conectá ideas. Comprendé decisiones | Conexiones entre economía, finanzas y productividad |
 | 5 | Detrás del Dinero | @DetrasDelDinero | Moneda parcialmente revelada | Cada decisión tiene una historia | Psicología y mecanismos detrás de nuestras decisiones económicas |
 
-Estilo común propuesto: azul marino, marfil, dorado; logo legible a tamaño pequeño; banner con espacio central seguro y sin textos extensos; avatar cuadrado. Crear arte final solo tras elegir nombre y confirmar disponibilidad/posibles conflictos de marcas.
+Estilo definido como punto de partida: azul marino, marfil, dorado; logo legible a tamaño pequeño; banner con espacio central seguro y sin textos extensos; avatar cuadrado. Crear arte final solo tras elegir nombre y confirmar disponibilidad/posibles conflictos de marcas.
 
 ## Audiencia
 
