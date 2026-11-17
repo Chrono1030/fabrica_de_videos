@@ -5,6 +5,7 @@ import re
 from .models import VideoScript
 
 UNSAFE_PROMISES = (
+    r"rentabilidad(es)? garantizada(s)?",
     r"ganancia(s)? garantizada(s)?",
     r"rendimiento(s)? garantizado(s)?",
     r"sin (ningún )?riesgo",
