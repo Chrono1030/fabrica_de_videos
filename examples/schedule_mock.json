@@ -1,0 +1,7 @@
+{
+  "timezone": "America/Argentina/Catamarca",
+  "local_time": "12:00",
+  "start_date": "2026-11-17",
+  "every_days": 1,
+  "max_attempts": 3
+}

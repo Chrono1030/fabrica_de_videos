@@ -1,0 +1,61 @@
+{
+  "topic": "El costo de oportunidad en las decisiones cotidianas",
+  "title": "Lo que dejás de elegir también cuenta",
+  "description": "Guion original para ensayo local de narración; ejemplo hipotético.",
+  "language": "es-419",
+  "hook": "¿Y si una tarde libre también tuviera un costo?",
+  "scenes": [
+    {
+      "narration": "¿Y si una tarde libre también tuviera un costo? No hablamos de una factura. Cada vez que elegimos algo, dejamos otra posibilidad afuera. Reconocerla ayuda a decidir con más claridad.",
+      "visual_type": "concept",
+      "headline": "Tu tiempo también cuenta",
+      "visual_label": "Ejemplo hipotético",
+      "visual_data": [
+        "Tiempo",
+        "Elección"
+      ]
+    },
+    {
+      "narration": "El costo de oportunidad es el valor de la mejor alternativa que dejamos pasar. No es la suma de todas las opciones. Y tampoco tiene que medirse en dinero: puede ser descanso, aprendizaje o tiempo compartido.",
+      "visual_type": "diagram",
+      "headline": "La mejor alternativa",
+      "visual_label": "Ejemplo hipotético",
+      "visual_data": [
+        "Elegir",
+        "Renunciar"
+      ]
+    },
+    {
+      "narration": "Imaginá este ejemplo hipotético: tenés dos horas libres y podés usarlas para hacer un curso o para visitar a una amiga. Si elegís el curso, el costo de oportunidad es el encuentro que dejás pasar, si era tu mejor alternativa.",
+      "visual_type": "bar_chart",
+      "headline": "Una tarde, dos opciones",
+      "visual_label": "Ejemplo hipotético",
+      "visual_data": [
+        "Curso:2",
+        "Visita:2"
+      ]
+    },
+    {
+      "narration": "Si elegís la visita, resignás ese tiempo de aprendizaje. Ninguna opción es siempre superior. La decisión depende de tus prioridades y de lo que necesitás hoy. Incluso descansar puede ser la alternativa más valiosa después de una semana agotadora.",
+      "visual_type": "comparison",
+      "headline": "Depende de tus prioridades",
+      "visual_label": "Ejemplo hipotético",
+      "visual_data": [
+        "Aprender",
+        "Compartir"
+      ]
+    },
+    {
+      "narration": "Antes de decidir, preguntate: ¿qué elijo y cuál es la mejor opción que dejo afuera? Compará sus beneficios y sus límites. No necesitás calcularlo todo; alcanza con hacer visible el intercambio. Elegir mejor empieza por reconocer a qué estás renunciando.",
+      "visual_type": "concept",
+      "headline": "Hacé visible el intercambio",
+      "visual_label": "Ejemplo hipotético",
+      "visual_data": [
+        "¿Qué elijo?",
+        "¿Qué dejo pasar?"
+      ]
+    }
+  ],
+  "disclaimer": "Contenido educativo. Situación hipotética, sin recomendaciones de inversión.",
+  "references": []
+}

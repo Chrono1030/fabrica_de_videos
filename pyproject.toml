@@ -26,3 +26,6 @@ testpaths = ["tests"]
 # Mismas reglas que el workflow de CI, independientes del entorno de ejecución.
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.setuptools.package-data]
+fabrica = ["data/*.json"]

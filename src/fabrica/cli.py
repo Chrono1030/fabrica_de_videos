@@ -45,7 +45,12 @@ def main():
     cards.add_argument("--output", type=Path, default=Path("out/cards"))
     for command in (val, cards):
         command.add_argument("--font", default=os.getenv("FONT_PATH"))
+    from .integrated_cli import add_commands, dispatch
+
+    add_commands(sub)
     args = parser.parse_args()
+    if dispatch(args):
+        return
     if args.cmd == "produce":
         from .pipeline import produce, produce_auto
         from .subtitle_style import SubtitleStyle

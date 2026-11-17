@@ -1,0 +1,5 @@
+[
+  {"name":"pesimista","monthly_videos":30,"eligible_views":0,"assumed_rpm_usd":0,"cost_per_video_usd":0,"monthly_fixed_usd":0,"human_hours":0,"hourly_cost_usd":0,"ypp_eligible":false,"monthly_shorts_eligible":false},
+  {"name":"base","monthly_videos":30,"eligible_views":0,"assumed_rpm_usd":0,"cost_per_video_usd":0,"monthly_fixed_usd":0,"human_hours":0,"hourly_cost_usd":0,"ypp_eligible":false,"monthly_shorts_eligible":false},
+  {"name":"optimista","monthly_videos":30,"eligible_views":0,"assumed_rpm_usd":0,"cost_per_video_usd":0,"monthly_fixed_usd":0,"human_hours":0,"hourly_cost_usd":0,"ypp_eligible":false,"monthly_shorts_eligible":false}
+]
