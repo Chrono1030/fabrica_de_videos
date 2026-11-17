@@ -16,6 +16,20 @@ Calidad y audiencia (tras autorización de Analytics): viewed vs swiped away, vi
 
 Monetización cuando elegible: ingreso por contenido, RPM disponible, coste de infraestructura/API por video, coste por 1000 vistas, retorno neto estimado y coste de intervención humana. No suponer ingresos publicitarios antes de admisión a YPP.
 
+## Viabilidad de ingresos pasivos y supuestos
+
+**Objetivo declarado por propietario:** generar un flujo de ingresos pasivos con mínima intervención rutinaria; no puede garantizarse monetización, admisión al YPP, distribución ni retorno. Tratar ingresos como escenario, nunca como entrada asegurada en el presupuesto personal.
+
+Desde el primer video registrar: costes API y TTS/hosting, coste de generación/revisión, horas humanas, publicaciones, visualizaciones cualificadas y suscriptores. Tras admisión a YPP: ingresos reales y RPM/ingresos por mil vistas **elegibles**; antes de YPP ingresos publicitarios reconocidos = 0.
+
+Modelo de escenarios con variables configurables, no cifras de RPM inventadas:
+- Ingreso estimado = vistas monetizables / 1000 * RPM neto supuesto.
+- Margen operativo = ingreso estimado - costes variables API/hosting/licencias - horas humanas valorizadas.
+- Punto de equilibrio en vistas = 1000 * costes imputables / RPM supuesto, solo si RPM > 0 y elegibilidad verificada.
+- Probar escenarios pesimista, base y optimista con supuestos declarados y sensibilidad; no confundir vistas brutas con vistas elegibles.
+
+Puertas: validación técnica, calidad/originalidad, legalidad de activos, 30 videos piloto y revisión económica. Si el canal no crece o el costo por video es insostenible, adaptar temas/duración/distribución o suspender producción; escalar solo con evidencia. Las reglas de YouTube pueden cambiar y deben revisarse antes de lanzamiento y antes de monetizar.
+
 ## Piloto
 
 1. Validar 10 producciones distintas sin intervención manual ni pruebas falsas de voz.
