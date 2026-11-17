@@ -53,6 +53,33 @@ def main():
             "inputs_equal": stable,
             "manual_score": None,
         }
+        native = OUT / name / "run-1/check.log"
+        layout_summary = "Sin clipping en capturas; revisión humana pendiente"
+        if native.exists():
+            try:
+                check = json.JSONDecoder().raw_decode(native.read_text().lstrip())[0]
+                if name == "hyperframes":
+                    details["native_qa"] = {
+                        k: v
+                        for k, v in check.items()
+                        if k
+                        in [
+                            "ok",
+                            "lint",
+                            "runtime",
+                            "layout",
+                            "motion",
+                            "contrast",
+                            "craft",
+                            "audio",
+                        ]
+                    }
+                    layout_summary = f"{check['layout']['errorCount']} errores; {check['layout']['warningCount']} avisos nativos"
+                else:
+                    details["native_qa"] = check
+                    layout_summary = f"{check['errors']} errores; {check['warnings']} avisos (todos los checks)"
+            except (ValueError, KeyError) as error:
+                details["native_qa_parse_error"] = str(error)
         report["engines"][name] = details
         render = " / ".join(f"{r.get('render_wall_seconds', 0):.2f}" for r in runs)
         cpu = " / ".join(f"{r.get('cpu_seconds', 0):.2f}" for r in runs)
@@ -69,7 +96,7 @@ def main():
             "givemotion": "HTML + gm.onFrame; 1 paquete npm; proyecto joven",
         }[name]
         lines.append(
-            f"| {name} | {runs[0]['engine_version']} | {'PASS ×2' if success else 'FAIL'} | {render} | {cpu} | {ram:.1f} | {size} | {same} | Ver QA debajo | 4 escenas; nota humana pendiente | {integration} | {license_name} |"
+            f"| {name} | {runs[0]['engine_version']} | {'PASS ×2' if success else 'FAIL'} | {render} | {cpu} | {ram:.1f} | {size} | {same} | {layout_summary} | 4 escenas; nota humana pendiente | {integration} | {license_name} |"
         )
     lines += [
         "",
@@ -142,6 +169,13 @@ def main():
     lines.append(
         f"\nRaíz Windows: `\\\\wsl.localhost\\Ubuntu-24.04\\home\\devvideo\\proyectos\\fabrica_de_videos\\out\\renderer_ab`. Inventario completo: `{OUT}/artifact-paths.txt`."
     )
+    for label in ["ruff-final.txt", "pytest-final.txt"]:
+        check_file = OUT / "checks" / label
+        if check_file.exists():
+            lines.append(f"\n{label}: {check_file.read_text().strip()}")
+    report["repository_checks"] = {
+        p.name: p.read_text() for p in (OUT / "checks").glob("*.txt")
+    }
     (OUT / "report.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False) + "\n"
     )
