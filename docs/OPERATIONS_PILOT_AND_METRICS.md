@@ -1,0 +1,39 @@
+# Calendario, métricas y continuidad operativa
+
+Se implementa **dentro de la misma aplicación**; no paneles ni automatizadores independientes. SQLite almacena programación, producción, publicaciones, métricas y fallos. Servicio único bajo supervisión externa Uptime Kuma en el despliegue final.
+
+## Calendario inicial
+
+Un slot candidato diario, con timezone IANA America/Argentina/Catamarca y fecha UTC persistida. El horario específico no fue elegido por propietario; parámetro configurable, no asumir hora universal. La elección de horario se revisará cuando existan datos reales de audiencia. Si un video no supera QA o faltan licencias, se salta la publicación: no sustituir por plantilla repetida.
+
+Planificador: comparar APScheduler estable 3.x y scheduler mínimo propio; fijar límite de una producción/render simultáneos según hardware, lock SQLite transaccional, job_id determinista por slot/versión, reanudación tras corte, backoff con jitter. No adelantar una publicación si el reloj está en error, caducó el slot o la zona horaria cambió.
+
+## Métricas MVP
+
+Operativas: trabajos iniciados, finalizados, bloqueados, fallas por etapa, tiempo de GPT/TTS/render/upload, CPU/RAM/disco, tokens y USD por video, cuota por plataforma, número de reintentos, porcentaje con QA aceptado, uploads privados verificados, duplicados (meta: cero).
+
+Calidad y audiencia (tras autorización de Analytics): viewed vs swiped away, vistas válidas de Shorts, porcentaje medio visto, duración media, retención por segmento, likes/comentarios, suscriptores ganados, geografía, principales temas, tasas de retorno. Consultar definiciones y permisos oficiales antes de implementar; no usar conteo de vistas bruto como única métrica. Registrar snapshot diario y ventanas de 24 h/7 d/30 d, teniendo en cuenta retrasos de la API.
+
+Monetización cuando elegible: ingreso por contenido, RPM disponible, coste de infraestructura/API por video, coste por 1000 vistas, retorno neto estimado y coste de intervención humana. No suponer ingresos publicitarios antes de admisión a YPP.
+
+## Piloto
+
+1. Validar 10 producciones distintas sin intervención manual ni pruebas falsas de voz.
+2. Subir cinco videos privados con aprobación humana inicial; verificar estado y no duplicados.
+3. Activar paso público supervisado tras licencia, originalidad y adecuación comprobadas.
+4. Probar hasta 30 videos en ritmo máximo diario; medir engagement/costes, no exigir publicación si QA bloquea.
+5. Revisar resultados semanalmente y decidir continuar/modificar/pausar con datos, sin umbrales monetarios inventados.
+
+No existe mínimo de publicaciones diarias exigido por el algoritmo de YouTube. La frecuencia estable sirve para experimentos operativos, no garantiza distribución.
+
+## Recuperación
+
+Backups de SQLite consistentes, manifests editoriales, result.json, assets finales y fuente/licencias. Separar cifrado de secretos OAuth/keys y sus backups. Política inicial sugerida: backup diario, revisión semanal de recuperación en entorno aislado; retención a definir según espacio; nunca arriesgar el backup del Homelab. Healthcheck interno y heartbeat de último trabajo completado; alertas por cola estancada, disco bajo, OAuth revocado, presupuesto agotado y permisos cambiados.
+
+Revocación: comando seguro que deshabilita PUBLISH_ENABLED, invalida tokens y no afecta archivos personales. Recuperación de upload interrumpido debe conciliar IDs remotos antes de reintentar. No prometer disponibilidad o idempotencia total sin ensayos.
+
+Fuentes:
+https://support.google.com/youtube/answer/11914225
+https://support.google.com/youtube/answer/141805
+https://support.google.com/youtube/answer/72851
+https://github.com/agronholm/apscheduler
