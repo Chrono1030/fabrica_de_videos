@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "experiment_id": "mente-capital-opportunity-visual-20261117",
+  "goal": "controlled A/B renderer comparison; never mix engines in same export",
+  "fixture_path": "experiments/renderer_ab/fixture.json",
+  "settings": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "duration_seconds": 20,
+    "random_seed": 1030,
+    "language": "es-419",
+    "audio_mode": "none",
+    "subtitle_mode": "reference_on_screen",
+    "font_family": "DejaVu Sans",
+    "colors": {
+      "background": "#112037",
+      "surface": "#182B40",
+      "gold": "#E6B864",
+      "ivory": "#F6EEDB",
+      "muted": "#9CB0C4"
+    },
+    "safe_area": {
+      "top_px": 160,
+      "bottom_px": 260,
+      "left_px": 80,
+      "right_px": 80
+    },
+    "reference": "visual only; not a fully narrated publishable video"
+  },
+  "renderers": {
+    "existing": {
+      "enabled": true,
+      "status": "control; adapt current Pillow/FFmpeg pipeline to fixture",
+      "type": "python_native",
+      "version": "repo_current"
+    },
+    "hyperframes": {
+      "enabled": true,
+      "status": "priority A proof of concept",
+      "type": "node_cli",
+      "package": "hyperframes",
+      "candidate_version": "0.9.59"
+    },
+    "givemotion": {
+      "enabled": true,
+      "status": "priority B proof of concept",
+      "type": "node_cli",
+      "package": "givemotion",
+      "candidate_version": "0.1.6"
+    },
+    "motion_canvas": {
+      "enabled": false,
+      "status": "fallback only",
+      "type": "node_cli",
+      "package": "@motion-canvas/core",
+      "candidate_version": null
+    },
+    "remotion": {
+      "enabled": false,
+      "status": "fallback only; verify commercial terms",
+      "type": "node_cli",
+      "package": "remotion",
+      "candidate_version": null
+    }
+  },
+  "execution": {
+    "mode": "sequential",
+    "max_concurrent_renderers": 1,
+    "never_mix_renderer_outputs": true,
+    "require_explicit_render_choice": true,
+    "reuse_same_fixture": true,
+    "freeze_dependency_lockfiles": true,
+    "allow_downloads": true,
+    "allow_publishing": false,
+    "allow_paid_apis": false,
+    "overwrite_existing_output": false,
+    "output_dir": "out/renderer_ab",
+    "repetitions_per_renderer": 2
+  },
+  "qa": {
+    "required_checks": [
+      "ffprobe duration, size, codec",
+      "ffmpeg complete decode",
+      "no text clipped or outside safe areas",
+      "no subtitle overlap",
+      "text properly aligned in cards",
+      "min three distinct semantic visuals",
+      "hook distinct from final screen",
+      "at least one meaningful visual change per 3 to 5 s, or documented editorial exception"
+    ],
+    "capture_seconds": [
+      0.5,
+      2,
+      4.5,
+      6.5,
+      9.5,
+      12,
+      15,
+      18.5
+    ],
+    "record": [
+      "version_lock",
+      "git_sha",
+      "os",
+      "node_version",
+      "browser_version",
+      "ffmpeg_version",
+      "python_version",
+      "render_wall_seconds",
+      "cpu_seconds",
+      "peak_rss_mb",
+      "out_bytes",
+      "sha256",
+      "framehash",
+      "qa_findings",
+      "manual_visual_rating"
+    ],
+    "no_quality_claim_from_pixel_diff_alone": true
+  }
+}
