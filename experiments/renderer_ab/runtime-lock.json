@@ -1,0 +1,80 @@
+{
+  "node": {
+    "version": "22.16.0",
+    "url": "https://nodejs.org/dist/v22.16.0/node-v22.16.0-linux-x64.tar.xz",
+    "sha256": "f4cb75bb036f0d0eddf6b79d9596df1aaab9ddccd6a20bf489be5abe9467e84e"
+  },
+  "chrome": {
+    "version": "157.0.8103.78",
+    "url": "https://storage.googleapis.com/chrome-for-testing-public/157.0.8103.78/linux64/chrome-headless-shell-linux64.zip",
+    "sha256": "f90329720fb61e5a76da9b6b509b6ad12a484c9c5df0359403e935177c6d153a"
+  },
+  "libraries": [
+    {
+      "package": "libasound2t64",
+      "version": "1.2.11-1ubuntu0.3",
+      "filename": "libasound2t64_1.2.11-1ubuntu0.3_amd64.deb",
+      "sha256": "5d17bfb5683eb99f1be951fe48e1be5bf3c52391913b6b74a8aecf9b4f5e779f"
+    },
+    {
+      "package": "libatk-bridge2.0-0t64",
+      "version": "2.52.0-1build1",
+      "filename": "libatk-bridge2.0-0t64_2.52.0-1build1_amd64.deb",
+      "sha256": "22b7d47e3c0f7953a78d3cfd309d1b20771085de9220fbe610c0989b9e808c9b"
+    },
+    {
+      "package": "libatk1.0-0t64",
+      "version": "2.52.0-1build1",
+      "filename": "libatk1.0-0t64_2.52.0-1build1_amd64.deb",
+      "sha256": "42c5d4b00954f17c2c3c4b866844f691eb8b6d57bf08b59203e65f12dc84a4f9"
+    },
+    {
+      "package": "libatspi2.0-0t64",
+      "version": "2.52.0-1build1",
+      "filename": "libatspi2.0-0t64_2.52.0-1build1_amd64.deb",
+      "sha256": "d686ace4080eca9c2d6ce8de69392a5ac56c846701894c0858922d4ce341a1d7"
+    },
+    {
+      "package": "libcups2t64",
+      "version": "2.4.7-1.2ubuntu7.14",
+      "filename": "libcups2t64_2.4.7-1.2ubuntu7.14_amd64.deb",
+      "sha256": "b815a3d936718614e403035bb4a545e1323305ea624709bff2e9d94c214f9cc4"
+    },
+    {
+      "package": "libgbm1",
+      "version": "25.2.8-0ubuntu0.24.04.4",
+      "filename": "libgbm1_25.2.8-0ubuntu0.24.04.4_amd64.deb",
+      "sha256": "4bfe348b456db5b445a80e0a3ffb9e9a01b91499bb86e0e568ca3634b134da7e"
+    },
+    {
+      "package": "libnspr4",
+      "version": "2:4.35-1.1build1",
+      "filename": "libnspr4_2%3a4.35-1.1build1_amd64.deb",
+      "sha256": "e579e72d091f6c7a13f5a756c31065b15aae5b81840d61b069355aa2283c07b4"
+    },
+    {
+      "package": "libnss3",
+      "version": "2:3.98-1ubuntu0.3",
+      "filename": "libnss3_2%3a3.98-1ubuntu0.3_amd64.deb",
+      "sha256": "e11fdf8c09a068d0f0c3fd90ed971253dfed7227cc20d3d487fd615d4771f1bb"
+    },
+    {
+      "package": "libxcomposite1",
+      "version": "1:0.4.5-1build3",
+      "filename": "libxcomposite1_1%3a0.4.5-1build3_amd64.deb",
+      "sha256": "a12d5d9ae70b798cbbf284080eae32b87367561fc9c24492f641b8860ac0f308"
+    },
+    {
+      "package": "libxdamage1",
+      "version": "1:1.1.6-1build1",
+      "filename": "libxdamage1_1%3a1.1.6-1build1_amd64.deb",
+      "sha256": "6891faf325e996ebd28ef53ebb9c043dc96f67327500490affc3e89d366d35ed"
+    },
+    {
+      "package": "libxrandr2",
+      "version": "2:1.5.2-2build1",
+      "filename": "libxrandr2_2%3a1.5.2-2build1_amd64.deb",
+      "sha256": "f2955a5e594f5724b58ad241d9231ea191cb36574a0d5e5ca6b661cd41d6256d"
+    }
+  ]
+}

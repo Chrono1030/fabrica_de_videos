@@ -2,6 +2,7 @@
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import platform
 import subprocess
@@ -9,12 +10,13 @@ import sys
 import time
 from pathlib import Path
 
+from measure import measured
 from PIL import Image, ImageDraw
 from visual import EXP, ROOT, build_html
 
 ENG = EXP / "engines"
 NODE = ENG / "node-v22.16.0-linux-x64/bin/node"
-CHROME = ENG / "chrome-headless-shell-linux64/chrome-headless-shell"
+CHROME = ENG / "chrome157/chrome-headless-shell-linux64/chrome-headless-shell"
 OUT = ROOT / "out/renderer_ab"
 
 
@@ -178,11 +180,31 @@ def run(name, repeat, overwrite):
     candidate = config["renderers"][name]
     if not candidate["enabled"]:
         raise ValueError(f"{name} is disabled")
+    for index in range(1, repeat + 1):
+        if (OUT / name / f"run-{index}").exists() and not overwrite:
+            raise FileExistsError(f"run-{index} exists; explicit --overwrite required")
+    if name != "existing":
+        installed = json.loads(
+            (ENG / name / "node_modules" / name / "package.json").read_text()
+        )
+        if (
+            installed["name"] != name
+            or installed["version"] != candidate["candidate_version"]
+        ):
+            raise ValueError("Installed engine identity/version does not match config")
     fixture = json.loads((EXP / "fixture.json").read_text())
     project = OUT / name / "project"
     if name != "existing":
         build_html(name, fixture, config["settings"], project)
+    frozen = {p.name: sha(p) for p in EXP.glob("*.py")}
+    frozen_sha = version(["git", "rev-parse", "HEAD"])
     for index in range(1, repeat + 1):
+        assert frozen == {p.name: sha(p) for p in EXP.glob("*.py")}, (
+            "Sources changed between repetitions"
+        )
+        assert frozen_sha == version(["git", "rev-parse", "HEAD"]), (
+            "Git SHA changed between repetitions"
+        )
         directory = OUT / name / f"run-{index}"
         if directory.exists() and not overwrite:
             raise FileExistsError(f"{directory} exists; explicit --overwrite required")
@@ -194,8 +216,10 @@ def run(name, repeat, overwrite):
             "renderer": name,
             "run": index,
             "git_sha": version(["git", "rev-parse", "HEAD"]),
-            "engine_version": candidate.get(
-                "candidate_version", candidate.get("version")
+            "engine_version": (
+                f"Pillow {importlib.metadata.version('Pillow')} / FFmpeg 6.1.1"
+                if name == "existing"
+                else candidate["candidate_version"]
             ),
             "fixture_sha256": sha(EXP / "fixture.json"),
             "config_sha256": sha(EXP / "config.json"),
@@ -216,7 +240,10 @@ def run(name, repeat, overwrite):
         lock = ENG / name / "package-lock.json"
         if lock.exists():
             manifest["lockfile_sha256"] = sha(lock)
-            manifest["composition_sha256"] = sha(project / "index.html")
+            manifest["composition_sha256"] = {
+                str(p.relative_to(project)): sha(p) for p in project.rglob("*.html")
+            }
+        (directory / "manifest.json").write_text(json.dumps(manifest, indent=2))
         try:
             if index == 1:
                 manifest["diagnostics"] = diagnostics(name, project, directory)
@@ -256,19 +283,25 @@ def run(name, repeat, overwrite):
             manifest["command"] = [str(a) for a in command]
             start = time.perf_counter()
             metrics = directory / "resources.txt"
-            r = execute(
+            returncode, tree_peak = measured(
                 ["/usr/bin/time", "-f", "%e %U %S %M", "-o", metrics, *command],
-                cwd=project if name != "existing" else ROOT,
+                project if name != "existing" else ROOT,
+                env(),
+                directory / "render.log",
             )
             manifest["render_wall_seconds"] = time.perf_counter() - start
-            (directory / "render.log").write_text(r.stdout + r.stderr)
+            manifest["peak_process_tree_rss_mb"] = tree_peak
+            manifest["tree_memory_method"] = (
+                "Sum of simultaneous descendant RSS sampled from /proc every 50ms; shared pages counted per process"
+            )
             values = metrics.read_text().splitlines()[-1].split()
             manifest.update(
                 cpu_seconds=float(values[1]) + float(values[2]),
                 peak_rss_mb=float(values[3]) / 1024,
                 memory_method="GNU time ru_maxrss: maximum individual process RSS, not simultaneous process-tree sum",
             )
-            r.check_returncode()
+            if returncode != 0:
+                raise RuntimeError(f"Native renderer exit {returncode}; see render.log")
             manifest["provenance"] = {
                 "adapter": name,
                 "native_command": manifest["command"],
@@ -322,8 +355,16 @@ def main():
         if args.renderer == "all"
         else [args.renderer]
     )
+    failed = False
     for name in names:
         run(name, args.repeat, args.overwrite)
+        failed |= any(
+            json.loads((OUT / name / f"run-{i}/manifest.json").read_text())["status"]
+            != "PASS"
+            for i in range(1, args.repeat + 1)
+        )
+    if failed:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

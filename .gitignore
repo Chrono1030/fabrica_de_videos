@@ -29,3 +29,5 @@ experiments/renderer_ab/engines/**/node_modules/
 experiments/renderer_ab/engines/node-*/
 experiments/renderer_ab/engines/chrome-*/
 experiments/renderer_ab/engines/browser-libs/
+
+experiments/renderer_ab/engines/chrome157/

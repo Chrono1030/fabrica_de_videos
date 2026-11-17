@@ -146,7 +146,7 @@ def build_html(engine, fixture, settings, target):
         Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf").read_bytes()
     ).decode()
     c = settings["colors"]
-    css = f"""@font-face{{font-family:Contract;src:url(data:font/ttf;base64,{fontdata})}}*{{box-sizing:border-box}}html,body{{margin:0;width:1080px;height:1920px;background:{c["background"]};color:{c["ivory"]};font-family:Contract;overflow:hidden}}section{{position:absolute;inset:0;padding:170px 80px 260px}}h1{{font-size:54px;line-height:1.25;text-align:center;color:{c["gold"]};height:240px;margin:0;border-bottom:3px solid {c["gold"]}}}svg{{width:240px;height:240px;fill:none;stroke:{c["gold"]};stroke-width:8;stroke-linecap:round;stroke-linejoin:round}}.stage{{position:absolute;top:570px;left:80px;width:920px;height:740px;display:flex;align-items:center;justify-content:center;gap:40px}}.card{{width:440px;height:520px;background:{c["surface"]};border:5px solid {c["gold"]};border-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:50px;position:relative}}.label{{font-size:42px;text-align:center}}.narrative{{position:absolute;top:1420px;left:100px;width:880px;font-size:36px;line-height:1.45;text-align:center;margin:0}}.caption{{position:absolute;left:80px;top:1680px;width:920px;height:160px;padding:25px;background:{c["surface"]};border-radius:20px;font-size:35px;line-height:1.4;display:flex;align-items:center;justify-content:center;text-align:center}}.opening{{flex-direction:column;gap:10px}}.opening>svg{{width:290px;height:290px}}.paths{{display:flex;gap:220px}}.paths svg{{width:200px;height:200px}}.fork{{height:140px!important}}.slash{{position:absolute;inset:30px;width:370px;height:450px}}.claim{{position:absolute;top:1220px;left:100px;width:880px;font-size:39px;text-align:center;line-height:1.4}}.summary{{flex-wrap:wrap;height:590px;gap:100px}}.summary svg:first-child{{margin:0 300px}}.hand{{transform-origin:120px 120px}}"""
+    css = f"""@font-face{{font-family:Contract;src:url(data:font/ttf;base64,{fontdata})}}*{{box-sizing:border-box}}html,body{{margin:0;width:1080px;height:1920px;background:{c["background"]};color:{c["ivory"]};font-family:Contract;overflow:hidden}}section{{position:absolute;inset:0;padding:170px 80px 260px}}h1{{font-size:54px;line-height:1.25;text-align:center;color:{c["gold"]};height:240px;margin:0;border-bottom:3px solid {c["gold"]}}}svg{{width:240px;height:240px;fill:none;stroke:{c["gold"]};stroke-width:8;stroke-linecap:round;stroke-linejoin:round}}.stage{{position:absolute;top:570px;left:80px;width:920px;height:740px;display:flex;align-items:center;justify-content:center;gap:40px}}.card{{width:440px;height:520px;background:{c["surface"]};border:5px solid {c["gold"]};border-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:50px;position:relative}}.label{{font-size:42px;text-align:center}}.narrative{{position:absolute;top:1420px;left:100px;width:880px;font-size:36px;line-height:1.45;text-align:center;margin:0}}.caption{{position:absolute;left:80px;top:1680px;width:920px;height:160px;padding:25px;background:{c["surface"]};border-radius:20px;font-size:35px;line-height:1.4;display:flex;align-items:center;justify-content:center;text-align:center}}.opening{{flex-direction:column;gap:10px}}.opening>svg{{width:290px;height:290px}}.paths{{display:flex;gap:220px}}.paths svg{{width:200px;height:200px}}.fork{{height:140px!important}}.slash{{position:absolute;inset:30px;width:370px;height:450px}}.claim{{position:absolute;top:1220px;left:100px;width:880px;font-size:39px;text-align:center;line-height:1.4}}.summary{{flex-wrap:wrap;height:590px;gap:100px}}.summary svg:first-child{{margin:0 300px}}.hand{{transform-box:view-box;transform-origin:120px 120px}}"""
     sections = []
     for i, b in enumerate(fixture["beats"]):
         esc = html.escape
@@ -187,27 +187,57 @@ def build_html(engine, fixture, settings, target):
             EXP / "engines/hyperframes/node_modules/gsap/dist/gsap.min.js",
             target / "gsap.min.js",
         )
-        script = "const tl=gsap.timeline({paused:true});"
+        # Native sub-compositions own their local scene time and visibility.
+        comps = target / "compositions"
+        comps.mkdir(exist_ok=True)
+        mounts = []
         for i, b in enumerate(fixture["beats"]):
-            start, end = b["start"], b["end"]
-            script += f'tl.set("#s{i}",{{visibility:"visible"}},{start});tl.set("#s{i}",{{visibility:"hidden"}},{end});tl.fromTo("#s{i} .stage",{{y:35}},{{y:0,duration:0.8,ease:"power2.out"}},{start});'
-        script += 'tl.to("#s0 .hand",{rotation:180,duration:4,ease:"none"},0);tl.fromTo("#s2 .slash",{opacity:0},{opacity:1,duration:1.3},9);tl.to("#s2 .option1",{opacity:0.5,duration:1.3},9);tl.fromTo("#s3 .summary svg",{scale:0.8},{scale:1,duration:1,stagger:0.5},14);window.__timelines=window.__timelines||{};window.__timelines.main=tl;tl.seek(0);'
+            duration = b["end"] - b["start"]
+            scene = (
+                sections[i]
+                .replace('class="scene clip"', 'class="scene"')
+                .replace(f'data-start="{b["start"]}"', 'data-start="0"')
+            )
+            scene = scene.replace('data-start="0"', "").replace(
+                f'data-duration="{duration}"', ""
+            )
+            animation = f'const tl=gsap.timeline({{paused:true}});tl.fromTo("#s{i} .stage",{{y:35}},{{y:0,duration:0.8,ease:"power2.out"}},0);'
+            if i == 0:
+                animation += 'tl.to("#s0 .hand",{rotation:180,svgOrigin:"120 120",duration:4,ease:"none"},0);'
+            if i == 2:
+                animation += 'tl.fromTo("#s2 .slash",{opacity:0},{opacity:1,duration:1.3},0);tl.to("#s2 .option1",{opacity:0.75,duration:1.3},0);'
+            if i == 3:
+                animation += 'tl.fromTo("#s3 .summary svg",{scale:0.8},{scale:1,duration:1,stagger:0.5},0);'
+            animation += f"tl.to({{}},{{duration:{duration}}},0);window.__timelines=window.__timelines||{{}};window.__timelines.scene{i}=tl;"
+            (comps / f"s{i}.html").write_text(
+                f'<template><div id="scene{i}" data-composition-id="scene{i}" data-width="1080" data-height="1920" data-duration="{duration}">{scene}</div><style>{css}</style><script>{animation}</script></template>'
+            )
+            mounts.append(
+                f'<div id="mount{i}" data-composition-id="scene{i}" data-composition-src="compositions/s{i}.html" data-start="{b["start"]}" data-duration="{duration}" data-track-index="{i}" style="position:absolute;inset:0"></div>'
+            )
+        script = "window.__timelines=window.__timelines||{};const tl=gsap.timeline({paused:true});tl.to({},{duration:20});window.__timelines.main=tl;"
         body = (
             '<main data-composition-id="main" data-start="0" data-duration="20" data-width="1080" data-height="1920" data-fps="24">'
-            + "".join(sections)
+            + "".join(mounts)
             + "</main>"
         )
-        css += "section{visibility:hidden}"
         head = '<script src="gsap.min.js"></script>'
     else:
-        body = "<main data-sequence>" + "".join(sections) + "</main>"
+        body = (
+            "<main data-sequence>"
+            + "".join(
+                section.replace(f'data-start="{b["start"]}"', 'data-start="0"')
+                for section, b in zip(sections, fixture["beats"])
+            )
+            + "</main>"
+        )
         script = ""
         for i in range(4):
             script += f"""gm.onFrame('#s{i}',t=>{{const p=Math.min(1,t/0.8);document.querySelector('#s{i} .stage').style.transform=`translateY(${{35*(1-p)**3}}px)`;"""
             if i == 0:
                 script += 'document.querySelector("#s0 .hand").style.transform=`rotate(${t*45}deg)`;'
             if i == 2:
-                script += 'document.querySelector("#s2 .slash").style.opacity=Math.min(1,t/1.3);document.querySelector("#s2 .option1").style.opacity=1-Math.min(1,t/1.3)*0.5;'
+                script += 'document.querySelector("#s2 .slash").style.opacity=Math.min(1,t/1.3);document.querySelector("#s2 .option1").style.opacity=1-Math.min(1,t/1.3)*0.25;'
             if i == 3:
                 script += 'document.querySelectorAll("#s3 .summary svg").forEach((e,j)=>e.style.transform=`scale(${0.8+0.2*Math.min(1,Math.max(0,t-j*0.5))})`);'
             script += "});"
