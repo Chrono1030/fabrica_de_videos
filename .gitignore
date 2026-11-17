@@ -23,3 +23,9 @@ credentials*.json
 # Metadatos locales de instalación editable
 *.egg-info/
 .ruff_cache/
+
+# Isolated renderer experiment runtimes
+experiments/renderer_ab/engines/**/node_modules/
+experiments/renderer_ab/engines/node-*/
+experiments/renderer_ab/engines/chrome-*/
+experiments/renderer_ab/engines/browser-libs/
