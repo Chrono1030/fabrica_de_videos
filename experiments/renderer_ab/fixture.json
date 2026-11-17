@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "id": "costo-oportunidad-visual-short-v1",
+  "title": "El costo de oportunidad",
+  "duration_seconds": 20,
+  "claims": [
+    "El costo de oportunidad se refiere al valor de la mejor alternativa descartada."
+  ],
+  "fact_policy": "Do not invent numeric data; hypotheticals must be labeled when amounts are present.",
+  "beats": [
+    {
+      "start": 0,
+      "end": 4,
+      "narrative": "Tenés una tarde libre y dos opciones para usar tu tiempo.",
+      "heading": "UNA TARDE LIBRE / DOS CAMINOS",
+      "visual_intent": "animated_clock_to_choice_fork",
+      "caption": "UNA TARDE LIBRE. ¿QUÉ HARÍAS?",
+      "semantic_objects": [
+        "clock",
+        "fork_to_two_activities"
+      ]
+    },
+    {
+      "start": 4,
+      "end": 9,
+      "narrative": "Podés estudiar o visitar a tus amigos, pero no hacer ambas actividades durante el mismo horario.",
+      "heading": "DOS ALTERNATIVAS",
+      "visual_intent": "balanced_option_cards",
+      "caption": "PODÉS ESTUDIAR O VER A TUS AMIGOS.",
+      "semantic_objects": [
+        "study_book",
+        "friends"
+      ],
+      "labels": [
+        "Estudiar",
+        "Ver amigos"
+      ]
+    },
+    {
+      "start": 9,
+      "end": 14,
+      "narrative": "Elegir estudiar significa renunciar a la visita; esa alternativa tiene valor.",
+      "heading": "ELEGIR IMPLICA RENUNCIAR",
+      "visual_intent": "select_and_dim_unselected",
+      "caption": "ESO QUE DEJÁS IR TAMBIÉN TIENE VALOR.",
+      "semantic_objects": [
+        "selected_study",
+        "discarded_visit"
+      ]
+    },
+    {
+      "start": 14,
+      "end": 20,
+      "narrative": "El costo de oportunidad no siempre es dinero. Puede ser tiempo, vínculos o experiencias.",
+      "heading": "EL COSTO NO SIEMPRE ES DINERO",
+      "visual_intent": "abstract_summary_and_distinct_close",
+      "caption": "¿QUÉ ELEGIRÍAS?",
+      "semantic_objects": [
+        "time",
+        "relationships",
+        "future"
+      ]
+    }
+  ],
+  "rules": [
+    "Keep existing brand palette and typographic character",
+    "Text inside the cards must be centered or deliberately balanced with icons",
+    "No generic $/% placeholder unless visually justified",
+    "Do not use equal-value bar chart for nonquantitative choices",
+    "Subtitles must be placed in reserved lower safe area",
+    "No real voice used in this POC; visual timing should be swappable for WAV times",
+    "No internet image assets or copyrighted external media"
+  ]
+}
