@@ -193,3 +193,12 @@ El modo `local` exige `--script` y usa Piper sin llamar a GPT. Instalación:
 antes de descargar una voz. Hay un guion original en
 `examples/costo_oportunidad.json` y una vista previa MOCK de 75 s; el video con
 voz real queda pendiente de un modelo latinoamericano autorizado.
+
+### Aplicación integrada: Mente y Capital
+
+Calendario SQLite, metadatos Pydantic, publicación YouTube exclusivamente simulada
+y registros de viabilidad forman parte de esta misma aplicación. Ver
+[demostración y comandos](docs/INTEGRATED_FACTORY.md),
+[licencias TTS](docs/TTS_COMMERCIAL_AUDIT.md) y
+[modelo económico](docs/VIABILITY.md). No se requiere n8n ni credenciales para
+`fabrica cycle`. La publicación real y pública sigue deshabilitada.

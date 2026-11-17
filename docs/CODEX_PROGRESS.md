@@ -107,3 +107,75 @@ contar con una voz autorizada. No hubo llamadas GPT ni publicaciones.
 Validación final: **37 pruebas aprobadas**, `ruff check .`, compilación Python y
 `git diff --check` aprobados. La prueba nativa de Piper usa un modelo inválido
 para comprobar errores; no certifica la síntesis ni la calidad de una voz real.
+
+## Iteración integrada — Mente y Capital (17/11/2026)
+
+Base auditada: rama Piper con cambios locales intactos; Ruff y **37 pruebas**
+reproducidos. Piper 1.8.0, ONNX Runtime 1.32.0, Python 3.12.3, Pydantic 2.14.3,
+Pillow 12.3.0, num2words 0.5.14. Persistencia del catálogo y render FFmpeg existente
+conservados. Se preservó el estado en commit `8349a52` en la rama Piper y se creó
+`codex/phase2-integrated-factory` desde ese commit.
+
+Se leyeron los seis documentos del PR 2 a `638dc05`, sin merge. Marca pública:
+Mente y Capital. No se comprobó handle ni se crearon cuentas. No se tocó Rocky
+Linux, Docker Desktop ni infraestructura del propietario.
+
+### Implementado y probado
+
+- Paquetes Pydantic con título/descripcion extractivos, idioma, categoría editorial,
+  público, declaración sintética justificada, portada, recursos/hashes y fuentes.
+  Control de repetición exacta y similitud textual >=0.90; no generación paga.
+- Calendario SQLite con zona IANA, hora/frecuencia, un slot por día, reserva conjunta
+  de tema y trabajo, lock del trabajador, recuperación, backoff y slots vencidos.
+  APScheduler comparado; no necesario para el caso de un único trabajador diario.
+- Publicador MOCK persistente y exclusivamente privado. Sesión y cursor, ID remoto
+  simulado, intentos/eventos, conciliación y cuarentena ante incertidumbre.
+  SDK oficial 2.202.0 instalado y preparación de MediaFileUpload ejecutada sin red.
+- Pruebas de éxito, conexión, cuota, token caducado, respuesta incierta, cursor
+  parcial, reinicio tras upload, trabajo ya cargado, canal equivocado, rechazo
+  editorial, pérdida de sesión inicial, backoff/límite y cambio remoto de privacidad.
+  Todas comprueban ausencia de reinserciones ciegas; solo cliente MOCK habilitado.
+- Métricas SQLite por job: tiempos, CPU/hijos, memoria aproximada, disco, API/costos,
+  errores/reintentos y horas humanas (`null` si no registradas). Escenarios
+  pesimista/base/optimista con RPM y elegibilidad explícitos, equilibrio y margen;
+  ingreso real separado y desconocido sin fuente oficial.
+- Registro local de versiones, licencias, cadena y hashes de voces. Kokoro 0.9.4
+  evaluado con dry-run sin dependencias; no instalado ni sintetizado. Voces Piper
+  es_AR/es_MX y Kokoro españolas siguen sin autorización comercial completa.
+- CLI `calendar`, `cycle`, `metrics`, `economics` y `voice-register`, dentro de
+  `fabrica`. Simulación sin credenciales ni modelos; no n8n.
+
+Demo: `out/integrated-demo/jobs/slot-8e1c55a30251599ab528a5b936bb4097/final.mp4`.
+1080×1920, 75.083333 s, H.264/AAC, gráficos y subtítulos inferiores. Decodificación
+completa aprobada; fotograma de 36 s inspeccionado. Paquete `metadata.json`, request
+local `upload_request.json` y registro `publication.json` disponibles. ID
+`mock-video-cccbc310fc8c61c6`, estado SIMULATED_PRIVATE_VERIFIED. Reejecutar mismo
+slot devuelve IDLE y no crea otro upload. **Son tonos MOCK y publicación simulada.**
+
+Validación final: **68 pruebas aprobadas en 59.55 s**, `ruff check .`,
+`compileall`, `git diff --check` y `pip check` aprobados. Los originales 37 tests
+se conservan. No se ejecutó GitHub Actions remoto, OAuth, GPT pago ni cargas reales.
+
+### Límites que permanecen
+
+Solo dos temas del catálogo tienen plantillas MOCK compatibles; no se presenta
+como generación automática de guiones nuevos para 50 temas. Las fuentes y la
+originalidad semántica requieren revisión independiente. La portada no se cargó
+remotamente; categoría 27 es fixture educativa pendiente de consulta regional real.
+El calendario es un tick CLI reanudable, sin servicio instalado en el host.
+SQLite/locks son locales, no coordinación distribuida.
+
+La prueba SDK prepara medios y payload, pero no prueba transporte HTTP, OAuth ni
+protocolo real 308. La idempotencia simulada no certifica exactly-once de YouTube;
+una sesión perdida queda en cuarentena. La voz comercial, muestras reales,
+benchmark auditivo y acento autorizado siguen pendientes. No se aprobó cambiar a
+es_ES ni habilitar publicación pública. Se documentaron umbrales de entrada,
+actividad y mantenimiento mensual de Shorts anunciados para febrero de 2027 con
+fuentes oficiales, sin asumir monetización del canal.
+
+Especificaciones y comandos: [INTEGRATED_FACTORY.md](INTEGRATED_FACTORY.md),
+[METADATA_CONTRACT.md](METADATA_CONTRACT.md),
+[SCHEDULER_ARCHITECTURE.md](SCHEDULER_ARCHITECTURE.md),
+[YOUTUBE_PUBLISHER.md](YOUTUBE_PUBLISHER.md),
+[TTS_COMMERCIAL_AUDIT.md](TTS_COMMERCIAL_AUDIT.md),
+[VIABILITY.md](VIABILITY.md), [DEPENDENCY_REUSE.md](DEPENDENCY_REUSE.md).

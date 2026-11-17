@@ -56,3 +56,22 @@ PostgreSQL, varios canales, nuevos componentes animados, videos largos y optimiz
 - [ ] Render Piper de 60–90 s e inspección de sincronía de subtítulos con voz
 
 Detalle: [PHASE2_PIPER.md](PHASE2_PIPER.md). Esta fase no usa GPT ni publica.
+
+## Iteración integrada — Mente y Capital
+
+Sustituye el requisito histórico de n8n: calendario interno en la aplicación.
+Marca aprobada Mente y Capital; handle aún no verificado. Documentos del PR 2
+consultados sin merge en revisión `638dc05`.
+
+- [x] Preservar Piper en commit local y derivar rama integrada
+- [x] Contrato/generador de metadatos y control de repetición
+- [x] Calendario diario con reserva transaccional y recuperación
+- [x] Publicador YouTube MOCK persistente, privado y sin OAuth
+- [x] Ciclo completo MOCK con MP4 decodificado, paquete y publicación simulada
+- [x] Registros de costos/recursos y escenarios económicos configurables
+- [x] Registro interno de procedencia de voces y revisión Piper/Kokoro
+- [ ] Voz es-419 comercialmente autorizada y comparación auditiva
+- [ ] Verificación factual/editorial independiente y piloto humano
+- [ ] OAuth real privado tras autorización; sin activar público
+
+Ver [INTEGRATED_FACTORY.md](INTEGRATED_FACTORY.md). TikTok sigue pospuesto.
