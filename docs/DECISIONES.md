@@ -16,7 +16,9 @@
 | ADR-012 | Un propietario y un canal YouTube inicialmente | Minimizar credenciales, operaciones y duplicados |
 | ADR-013 | Subida YouTube privada por defecto y validación explícita de canal/estado | API puede publicar como público por defecto desde noviembre de 2026 |
 | ADR-014 | Originalidad sustancial y control de repetición son bloqueantes | Aspirar a monetización sin garantizar aceptación de YPP |
-| ADR-015 | Branding no decidido; cinco candidatos documentados | Usuario elegirá nombre y handle tras verificar disponibilidad |
+| ADR-015 | **Nombre de canal aprobado: Mente y Capital**; @MenteYCapital tentativo hasta verificar disponibilidad y conflictos | Identidad separada del propietario y propuesta educativa amplia |
+| ADR-017 | La rentabilidad es una meta estratégica, **no una garantía** de ingresos; medir costo unitario, punto de equilibrio y resultados reales con gates go/no-go | Evitar invertir recursos indefinidamente sin validación económica |
+| ADR-018 | TikTok se pospone hasta que YouTube esté técnicamente operativo y validado | Reducir complejidad y requisitos de permisos del MVP |
 | ADR-016 | Métricas/analítica avanzada se difieren; registros operativos básicos desde MVP | Evitar sobreingeniería |
  
 Documentos actuales:
