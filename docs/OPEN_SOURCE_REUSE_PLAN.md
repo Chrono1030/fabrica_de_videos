@@ -39,3 +39,36 @@ https://github.com/googleapis/google-api-python-client
 https://github.com/tkarabela/pysubs2
 https://github.com/OHF-Voice/piper1-gpl/blob/main/docs/LICENSING.md
 https://www.remotion.dev/docs/license/pricing
+
+## Prioridad audiovisual a partir del MOCK de 75 s (revisión 2026-11-17)
+
+El primer MOCK de Mente y Capital tiene paleta/fuentes aceptadas y un render funcional, pero mucho espacio central permanece estático, hay labels descentrados, símbolos genéricos ($/%) no asociados al tema, barras cualitativamente irrelevantes y elementos repetidos en apertura/cierre. **No resolver agregando imágenes aleatorias**: se requiere planificación visual semántica y render 2D animado con autoevaluación de layout.
+
+| Motor o recurso | URL | Licencia divulgada | Por qué evaluar | Riesgo/condición |
+|---|---|---|---|---|
+| **HyperFrames** | https://github.com/heygen-com/hyperframes | Apache-2.0 | Motor de HTML a video para agentes, catálogo visual amplio, verificaciones de clipping/layout, ejemplos de explainer | Dependencias JS y Chrome/Bun; benchmark local en CPU, auditar política de ejecución de código generado |
+| **givemotion** | https://github.com/givemotion/givemotion | MIT, v0.1.5 (noviembre 2026) | Render HTML/CSS/JS, check de solapamientos/contraste/ritmo, snapshots/contact sheet, bloques compare/chart/steps, render incremental | Proyecto joven; validar promesas de performance, mantenimiento y seguridad antes de adoptar |
+| **Motion Canvas** | https://github.com/motion-canvas/motion-canvas | MIT | Motion graphics vectoriales específicamente para voz en off, timeline y sincronía | TypeScript; piezas animadas deben diseñarse; no genera semántica desde guion |
+| **Remotion** | https://github.com/remotion-dev/remotion | Licencia propietaria source-available, Free License para individuo/equipo <=3 sujeto a términos | Render visual React y ecosistema amplio de plantillas | Revisar términos comerciales y obligaciones si el proyecto cambia de estructura |
+| **81 templates Remotion** | https://github.com/reactvideoeditor/remotion-templates | MIT para plantillas (independiente del motor) | Charts animados, numeradores, transiciones y layouts | Asegurar diseño responsive vertical, revisar atribuciones y no repetir template sin valor adicional |
+| **50 templates Remotion** | https://github.com/RenderComp/free-remotion-templates | MIT para templates | Charts, KPIs y algunos 9:16 listos | Igual: motor Remotion sujeto a su licencia |
+| **Canvas explainer videos** | https://github.com/junjie721/canvas-explainer-videos | Verificar LICENSE antes de usar | Ejemplos de explainer 15–90 s y sincronización opcional TTS | Proyecto menor, ejemplos chinos; no incorporar como dependencia sin evaluar |
+| **explainer-studio** | https://github.com/DV0x/explainer-studio | Verificar LICENSE antes de copiar | Referencia para estilo ilustración dibujada + captions + FFmpeg | Menos madurez, estilo no necesariamente coincide con marca |
+
+**Primera recomendación: POC HyperFrames vs givemotion**, con Motion Canvas como alternativa sólida si la sincronía fina de diagramas es más importante. No sustituir FFmpeg ni el orquestador Python; el renderer candidato se ejecuta como módulo/subproceso interno sin servicio independiente. Mantener contratos Pydantic/SQLite, composición de audio/subtítulos y QA existente.
+
+### Arquitectura visual objetivo
+
+`VideoScript Pydantic -> VisualStoryboard (scene_type, semantic_intent, layout, data, timing, actions) -> renderer adapter (Pillow actual / HTML candidato) -> escenas renderizadas -> FFmpeg + WAV + subtítulos -> QA`.
+
+Planificador de planos (reglas + IA) debe elegir entre: `decision_split`, `choice_tradeoff`, `timeline_clock`, `number_compare`, `cause_effect`, `flow_diagram`, `illustrated_concept`, `summary_reveal`. Para cada escena, generar eventos con tiempo relativo a narración real. Nunca inventar números para graficar; ejemplos hipotéticos marcados.
+
+### Experimento comparativo obligatorio
+
+- Misma muestra de 12–20 s del guion de costo de oportunidad (dos opciones, elegir/renunciar, costo invisible), branding azul-marfil-dorado y tipografía existente, 1080×1920/24–30 fps.
+- Realizar 2 prototipos aislados, uno HyperFrames y otro givemotion. Opcional Motion Canvas como control, pero no implementar 3 pipelines de producción.
+- Requisitos: textos centrados en tarjetas, sin clipping ni superposiciones con subtítulos; al menos tres recursos semánticos distinguibles, no icono '$ %' ni barras iguales arbitrarias; eventos visuales sincronizables con pista de audio; primer hook específico y cierre diferente; contenido determinista y testable.
+- Medir tiempo de generación del código, tasa de layouts inválidos, duración render CPU, RAM pico, bytes de salida, mantenimiento de versiones, licencia/seguridad. Capturar frames clave e informes automáticos. Inspeccionar visualmente en escala móvil.
+- Elegir **un solo** renderer ganador como dependencia interna tras informe; no reemplazar pipeline actual ni rebasar trabajos de Codex CLI sin aprobación.
+
+Demos para revisar: https://hyperframes.heygen.com/ (videos tipo Explainer, Motion design), https://givemotion.org/ (muestras MP4 y comparación), https://motioncanvas.io/ y https://www.reactvideoeditor.com/remotion-templates.
