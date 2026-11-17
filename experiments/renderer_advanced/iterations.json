@@ -1,0 +1,40 @@
+{
+  "measurement": "Retrospective iteration log; no stopwatch evidence for authoring wall time. Line counts are descriptive, not quality scores.",
+  "shared": [
+    "Read baseline code, reports and pinned versions; pytest 72 PASS and Ruff PASS before edits",
+    "Reuse previous native commands, environment allowlist and process measurement; new engine-independent VisualStoryboard and protocol",
+    "14 boundary tests; pytest import path corrected before renders"
+  ],
+  "givemotion": [
+    {
+      "iteration": 1,
+      "change": "Continuous ledger, proportional ribbon, category cards, numerical transfer and before/after strips",
+      "evidence": "givemotion/styleframes/ (initial native snapshots)"
+    },
+    {
+      "iteration": 2,
+      "change": "Remove overlong fixed-cost detail; reroute variable flow; animate money dots; keep transfer token off its label; keep final comparison continuous"
+    },
+    {
+      "iteration": 3,
+      "change": "Native QA: increase details to 28 px and disclaimer to 28 px, balance narrative wrapping, move explanatory ribbon label off routes, fade transfer exit; preserve integer sum at every transfer frame."
+    }
+  ],
+  "hyperframes": [
+    {
+      "iteration": 1,
+      "change": "Seven native subcompositions with GSAP, segmented ring, proportional bars, routes, transfer and savings comparison",
+      "evidence": "hyperframes/styleframes/ (initial native snapshots)"
+    },
+    {
+      "iteration": 2,
+      "change": "Reduce central number from 51 to 44 px to fit ring; move transfer callout below numeric rows; route flows to their categories; explicit head/body and div template roots"
+    },
+    {
+      "iteration": 3,
+      "change": "Native QA: increase disclaimer to 28 px, shorter ring label stays 28 px after camera scale, balance narrative, stable mount IDs; preserve integer sum at every transfer frame."
+    }
+  ],
+  "fairness": "One initial implementation, one screenshot correction round and one native QA correction round per engine before measured runs. No stopwatch evidence for equal authoring time.",
+  "excluded": "No full editorial QA, phonetic timing, TTS work, paid APIs or publication"
+}

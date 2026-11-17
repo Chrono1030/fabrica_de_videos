@@ -22,6 +22,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 
 # Mismas reglas que el workflow de CI, independientes del entorno de ejecución.
 [tool.ruff.lint]
