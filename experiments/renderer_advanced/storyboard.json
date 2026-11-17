@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "video_id": "mente-capital-budget-advanced-55",
+  "title": "¿Por qué no te queda dinero a fin de mes?",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "duration": 55,
+  "language": "es-419",
+  "audio": "none",
+  "palette": {
+    "background": "#112037",
+    "surface": "#182B40",
+    "gold": "#E6B864",
+    "ivory": "#F6EEDB",
+    "muted": "#9CB0C4"
+  },
+  "typography": {
+    "family": "DejaVu Sans",
+    "body_px": 40,
+    "heading_px": 68
+  },
+  "safe_area": {
+    "top": 160,
+    "bottom": 260,
+    "left": 80,
+    "right": 80
+  },
+  "budgets": {
+    "initial": {
+      "income": 1200000,
+      "fixed": 700000,
+      "variable": 380000,
+      "savings": 120000
+    },
+    "alternative": {
+      "income": 1200000,
+      "fixed": 700000,
+      "variable": 350000,
+      "savings": 150000
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene-01",
+      "narrative_segment_id": "mc-budget-seg-01",
+      "start": 0,
+      "end": 5,
+      "narrative": "Imaginá que cobrás $1.200.000. ¿Cuánto te queda?",
+      "visual_intent": "Importe inicial se transforma en presupuesto",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 380000,
+        "savings": 120000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-01-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-01-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Importe inicial se transforma en presupuesto",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-02",
+      "narrative_segment_id": "mc-budget-seg-02",
+      "start": 5,
+      "end": 12,
+      "narrative": "Para entenderlo, seguí el recorrido de cada peso",
+      "visual_intent": "Flujo de dinero hacia categorías",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 380000,
+        "savings": 120000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-02-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-02-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Flujo de dinero hacia categorías",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-03",
+      "narrative_segment_id": "mc-budget-seg-03",
+      "start": 12,
+      "end": 20,
+      "narrative": "$700.000 cubren gastos fijos: alquiler, servicios y transporte",
+      "visual_intent": "Distribución proporcional del ingreso y gastos fijos",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 380000,
+        "savings": 120000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-03-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-03-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Distribución proporcional del ingreso y gastos fijos",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-04",
+      "narrative_segment_id": "mc-budget-seg-04",
+      "start": 20,
+      "end": 28,
+      "narrative": "Otros $380.000 van a gastos variables. Quedan $120.000",
+      "visual_intent": "Presupuesto completo y margen restante",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 380000,
+        "savings": 120000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-04-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-04-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Presupuesto completo y margen restante",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-05",
+      "narrative_segment_id": "mc-budget-seg-05",
+      "start": 28,
+      "end": 37,
+      "narrative": "¿Y si trasladás $30.000 de gastos variables al ahorro?",
+      "visual_intent": "Transferencia entre categorías conservando el total",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings",
+        "transfer"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 380000,
+        "savings": 120000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-05-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-05-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Transferencia entre categorías conservando el total",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-06",
+      "narrative_segment_id": "mc-budget-seg-06",
+      "start": 37,
+      "end": 46,
+      "narrative": "Con el mismo ingreso: $700.000 fijos, $350.000 variables y $150.000 de ahorro",
+      "visual_intent": "Transformación y comparación antes/después",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 350000,
+        "savings": 150000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-06-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-06-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Transformación y comparación antes/después",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-07",
+      "narrative_segment_id": "mc-budget-seg-07",
+      "start": 46,
+      "end": 55,
+      "narrative": "No ganaste más dinero. Hiciste visible una decisión. ¿Qué parte de tu presupuesto revisarías?",
+      "visual_intent": "Conclusión relacionada con las cifras anteriores",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {
+        "income": 1200000,
+        "fixed": 700000,
+        "variable": 350000,
+        "savings": 150000,
+        "transfer": 30000
+      },
+      "events": [
+        {
+          "id": "event-07-orient",
+          "at": 0,
+          "duration": 1,
+          "intent": "Orientar la mirada y conservar la continuidad",
+          "elements": [
+            "income"
+          ]
+        },
+        {
+          "id": "event-07-explain",
+          "at": 1,
+          "duration": 4,
+          "intent": "Conclusión relacionada con las cifras anteriores",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ]
+        }
+      ]
+    }
+  ],
+  "source_metadata": {
+    "origin": "User supplied hypothetical example, 2026-11-17",
+    "disclaimer": "Cifras hipotéticas. No es un presupuesto real ni una recomendación personalizada.",
+    "currency": "ARS",
+    "tts_status": "pending; segment IDs reserved; no phonetic alignment"
+  }
+}

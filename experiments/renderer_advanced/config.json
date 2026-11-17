@@ -1,0 +1,8 @@
+{
+  "renderers": {"givemotion": "0.1.6", "hyperframes": "0.9.59"},
+  "disabled": ["existing", "pillow", "motion_canvas", "remotion"],
+  "execution": "sequential",
+  "repetitions": 2,
+  "seed": 1030,
+  "captures": [0.5, 3.5, 6, 10, 14, 18, 22, 26, 29, 32, 35.5, 39, 43, 47, 50, 54]
+}
