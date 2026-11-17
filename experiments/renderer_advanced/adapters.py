@@ -98,8 +98,31 @@ class NativeAdapter:
             raise ValueError(
                 "Advanced experiment requires 1080x1920, 24 fps, 55 seconds"
             )
+        if storyboard.typography.get("family") != "DejaVu Sans":
+            raise ValueError(
+                "This brand adapter requires the installed project font DejaVu Sans"
+            )
+        if not {"initial", "alternative"} <= storyboard.budgets.keys():
+            raise ValueError("Budget scenes require initial and alternative data")
+        before, after = storyboard.budgets["initial"], storyboard.budgets["alternative"]
+        if before.income != after.income or before.fixed != after.fixed:
+            raise ValueError("Reallocation must preserve income and fixed expenses")
+        if before.variable - after.variable != after.savings - before.savings:
+            raise ValueError("Transfer must conserve the total")
         if len(storyboard.scenes) != 7:
             raise ValueError("Seven scenes required")
+
+    def brand(self, page, storyboard):
+        defaults = {
+            "background": "#112037",
+            "surface": "#182B40",
+            "gold": "#E6B864",
+            "ivory": "#F6EEDB",
+            "muted": "#9CB0C4",
+        }
+        for role, color in defaults.items():
+            page = page.replace(color, storyboard.palette[role])
+        return page
 
     def prepare(self, project):
         project.mkdir(parents=True, exist_ok=True)
@@ -247,7 +270,7 @@ class GivemotionAdapter(NativeAdapter):
                 "__STORYBOARD__", storyboard.model_dump_json().replace("<", "\\u003c")
             )
         )
-        (project / "index.html").write_text(page)
+        (project / "index.html").write_text(self.brand(page, storyboard))
 
     def command(self, project, video):
         return self.cli() + [
@@ -304,11 +327,14 @@ class HyperframesAdapter(NativeAdapter):
                 "__NARRATIVE__": html.escape(scene.narrative),
                 "__SCENE__": scene.model_dump_json().replace("<", "\\u003c"),
                 "__INDEX__": str(i),
+                "__BUDGETS__": json.dumps(
+                    {k: v.model_dump() for k, v in storyboard.budgets.items()}
+                ),
             }
             page = template
             for key, value in replacements.items():
                 page = page.replace(key, value)
-            (comps / f"s{i}.html").write_text(page)
+            (comps / f"s{i}.html").write_text(self.brand(page, storyboard))
             mounts.append(
                 f'<div id="mount-{identity}" data-composition-id="{identity}" data-composition-src="compositions/s{i}.html" data-start="{scene.start}" data-duration="{duration}" data-track-index="{i}" style="position:absolute;inset:0"></div>'
             )

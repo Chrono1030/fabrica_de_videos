@@ -9,33 +9,36 @@
 </style><body><section class="scene" id="film" data-duration="55">
 <header>MENTE Y CAPITAL · ARS</header><div id="chapter"></div><h1 id="heading"></h1>
 <svg id="graphic" viewBox="0 0 920 760">
-<text id="incomeLabel" x="460" y="45" font-size="30" class="muted">INGRESO MENSUAL</text><text id="income" x="460" y="118" font-size="78" font-weight="700">$1.200.000</text>
+<text id="incomeLabel" x="460" y="45" font-size="30" class="muted">INGRESO MENSUAL</text><text id="income" x="460" y="118" font-size="78" font-weight="700"></text>
 <g id="ledger"><rect x="40" y="190" width="840" height="138" rx="18" fill="#273D54"/><g id="ribbon"><rect id="fixed" x="40" y="190" width="490" height="138" fill="#9CB0C4"/><rect id="variable" x="530" y="190" width="266" height="138" fill="#F6EEDB"/><rect id="savings" x="796" y="190" width="84" height="138" fill="#E6B864"/></g><text id="ribbonNote" x="460" y="175" font-size="25" class="muted">CADA TRAMO REPRESENTA SU PARTE DEL TOTAL</text></g>
 <g id="routes" fill="none" stroke="#9CB0C4" stroke-width="3"><path d="M285 328V387H165V430"/><path d="M663 328V387H470V430"/><path d="M838 328V387H775V430"/></g>
 <g id="travelDots" fill="#E6B864"><circle r="10"/><circle r="10"/><circle r="10"/></g><g id="cards"></g>
-<g id="transfer"><path d="M460 625Q610 740 755 625" fill="none" stroke="#E6B864" stroke-width="5"/><path d="M734 634L755 625L750 649" fill="none" stroke="#E6B864" stroke-width="5"/><rect id="coin" x="422" y="645" width="76" height="46" rx="15" fill="#E6B864"/><text x="610" y="740" font-size="35" class="gold">REASIGNÁS $30.000</text></g>
-<g id="comparison"><text x="40" y="667" text-anchor="start" font-size="27" class="muted" style="text-anchor:start">ANTES</text><g id="beforeRibbon"><rect x="205" y="640" width="350" height="42" fill="#9CB0C4"/><rect x="555" y="640" width="190" height="42" fill="#F6EEDB"/><rect x="745" y="640" width="60" height="42" fill="#E6B864"/></g><text x="840" y="672" font-size="26" class="gold">10%</text><text x="40" y="737" font-size="27" class="muted" style="text-anchor:start">AHORA</text><rect x="205" y="710" width="350" height="42" fill="#9CB0C4"/><rect x="555" y="710" width="175" height="42" fill="#F6EEDB"/><rect x="730" y="710" width="75" height="42" fill="#E6B864"/><text x="844" y="742" font-size="26" class="gold">12,5%</text></g>
+<g id="transfer"><path d="M460 625Q610 740 755 625" fill="none" stroke="#E6B864" stroke-width="5"/><path d="M734 634L755 625L750 649" fill="none" stroke="#E6B864" stroke-width="5"/><rect id="coin" x="422" y="645" width="76" height="46" rx="15" fill="#E6B864"/><text id="transferLabel" x="610" y="740" font-size="35" class="gold"></text></g>
+<g id="comparison"><text x="40" y="667" text-anchor="start" font-size="27" class="muted" style="text-anchor:start">ANTES</text><g id="beforeRibbon"><rect x="205" y="640" width="350" height="42" fill="#9CB0C4"/><rect x="555" y="640" width="190" height="42" fill="#F6EEDB"/><rect x="745" y="640" width="60" height="42" fill="#E6B864"/></g><text id="beforePct" x="840" y="672" font-size="26" class="gold"></text><text x="40" y="737" font-size="27" class="muted" style="text-anchor:start">AHORA</text><g id="afterRibbon"><rect x="205" y="710" width="350" height="42" fill="#9CB0C4"/><rect x="555" y="710" width="175" height="42" fill="#F6EEDB"/><rect x="730" y="710" width="75" height="42" fill="#E6B864"/></g><text id="afterPct" x="844" y="742" font-size="26" class="gold"></text></g>
 </svg><p id="narrative"></p><div id="disclaimer">Cifras hipotéticas. No es un presupuesto real<br>ni una recomendación personalizada.</div><div class="track"><i id="progress"></i></div></section>
 <script>
-const board=__STORYBOARD__;
+const board=__STORYBOARD__,before=board.budgets.initial,after=board.budgets.alternative,total=before.income,delta=before.variable-after.variable;
 const $=s=>document.querySelector(s), money=n=>'$'+Math.round(n).toLocaleString('es-AR');
-const headings=['¿Cuánto te queda?','El recorrido de cada peso','Primero, los gastos fijos','Lo que queda disponible','Una decisión de $30.000','Mismo ingreso. Otra distribución.','Hacer visible una decisión'];
+const headings=['¿Cuánto te queda?','El recorrido de cada peso','Primero, los gastos fijos','Lo que queda disponible','Una decisión de '+money(delta),'Mismo ingreso. Otra distribución.','Hacer visible una decisión'];
 const names=['GASTOS FIJOS','VARIABLES','AHORRO'], colors=['#9CB0C4','#F6EEDB','#E6B864'];
 $('#cards').innerHTML=names.map((n,j)=>`<g id="card${j}"><rect x="${25+j*305}" y="430" width="280" height="182" rx="20" fill="#182B40" stroke="${colors[j]}" stroke-width="2"/><circle cx="${165+j*305}" cy="460" r="6" fill="${colors[j]}"/><text x="${165+j*305}" y="500" font-size="25">${n}</text><text id="amount${j}" x="${165+j*305}" y="558" font-size="39" font-weight="700"></text><text id="detail${j}" x="${165+j*305}" y="591" font-size="28" class="muted"></text></g>`).join('');
+$('#income').textContent=money(total);$('#transferLabel').textContent='REASIGNÁS '+money(delta);
+for(const [key,budget] of [['before',before],['after',after]]){let x=205;document.querySelectorAll('#'+key+'Ribbon rect').forEach((r,j)=>{const w=600*[budget.fixed,budget.variable,budget.savings][j]/total;r.setAttribute('x',x);r.setAttribute('width',w);x+=w});$('#'+key+'Pct').textContent=(100*budget.savings/total).toLocaleString('es-AR',{maximumFractionDigits:1})+'%'}
+let edge=40;document.querySelectorAll('#routes path').forEach((path,j)=>{const width=840*[before.fixed,before.variable,before.savings][j]/total;path.setAttribute('d',`M${edge+width/2} 328V387H${165+j*305}V430`);edge+=width});
 const clamp=v=>Math.max(0,Math.min(1,v)), smooth=v=>{v=clamp(v);return v*v*(3-2*v)};
 gm.onFrame('#film',t=>{
  const i=Math.max(0,board.scenes.findIndex(s=>t>=s.start&&t<s.end)),s=board.scenes[i],u=t-s.start;
  $('#chapter').textContent=`0${i+1} / 07`;$('#heading').textContent=headings[i];$('#narrative').textContent=s.narrative;
  $('#narrative').dataset.segment=s.narrative_segment_id;
- const unfold=smooth((t-1.2)/2.6),p=smooth((t-29.5)/5),shift=Math.round(30000*p),v=380000-shift,a=120000+shift;
+ const unfold=smooth((t-1.2)/2.6),p=smooth((t-29.5)/5),shift=Math.round(delta*p),v=before.variable-shift,a=before.savings+shift;
  $('#income').setAttribute('y',118+180*(1-unfold));$('#income').setAttribute('font-size',78+16*(1-unfold));
  $('#ribbonNote').style.opacity=smooth((t-3.5)/.4);$('#incomeLabel').style.opacity=unfold;$('#ledger').style.opacity=unfold;
  $('#ribbon').style.transform=`scaleY(${.15+.85*unfold})`;$('#ribbon').style.transformOrigin='460px 259px';
- const sw=840*a/1200000;$('#variable').setAttribute('width',840*v/1200000);$('#savings').setAttribute('x',880-sw);$('#savings').setAttribute('width',sw);
+ const fw=840*before.fixed/total,sw=840*a/total;$('#fixed').setAttribute('width',fw);$('#variable').setAttribute('x',40+fw);$('#variable').setAttribute('width',840*v/total);$('#savings').setAttribute('x',880-sw);$('#savings').setAttribute('width',sw);
  $('#routes').style.opacity=i===1?1:0;
  $('#travelDots').style.opacity=i===1?1:0;
  document.querySelectorAll('#routes path').forEach((path,j)=>{const f=smooth((u-.4-j*.5)/3.2),pos=path.getPointAtLength(path.getTotalLength()*f),dot=document.querySelectorAll('#travelDots circle')[j];dot.setAttribute('cx',pos.x);dot.setAttribute('cy',pos.y);});
- [700000,v,a].forEach((n,j)=>{const enter=smooth((t-3-j*.4)/1.3);const el=$('#card'+j);el.style.opacity=enter*(i===2&&j>0?.38:1);el.style.transform=`translateY(${(1-enter)*45}px)`;$('#amount'+j).textContent=money(n);$('#detail'+j).textContent=j===0?'58,3% del ingreso':j===1?(100*v/1200000).toLocaleString('es-AR',{maximumFractionDigits:1})+'% del ingreso':(100*a/1200000).toLocaleString('es-AR',{maximumFractionDigits:1})+'% del ingreso';});
+ [before.fixed,v,a].forEach((n,j)=>{const enter=smooth((t-3-j*.4)/1.3);const el=$('#card'+j);el.style.opacity=enter*(i===2&&j>0?.38:1);el.style.transform=`translateY(${(1-enter)*45}px)`;$('#amount'+j).textContent=money(n);$('#detail'+j).textContent=j===0?(100*before.fixed/total).toLocaleString('es-AR',{maximumFractionDigits:1})+'% del ingreso':j===1?(100*v/total).toLocaleString('es-AR',{maximumFractionDigits:1})+'% del ingreso':(100*a/total).toLocaleString('es-AR',{maximumFractionDigits:1})+'% del ingreso';});
  $('#transfer').style.opacity=i===4?smooth(u/.5)*smooth((37-t)/.4):0;$('#coin').setAttribute('x',422+295*p);$('#coin').setAttribute('y',605+230*p*(1-p));
  $('#comparison').style.opacity=i>=5?smooth((t-37)/.7):0;
  $('#savings').setAttribute('stroke',i===3?'#E6B864':'none');$('#savings').setAttribute('stroke-width','8');

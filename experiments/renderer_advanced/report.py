@@ -170,7 +170,7 @@ def main():
         "",
         "## Esfuerzo e iteraciones",
         "",
-        "Registro completo en iterations.json: cuatro iteraciones por motor (diseño, capturas, check nativo y corrección tras revisar el primer MP4). Las cuatro exportaciones previas se conservaron en out/renderer_advanced_iteration-3 y se excluyen de esta tabla final. No hay evidencia de horas de autoría exactas; no se afirma igualdad cronometrada de esfuerzo. Ambos recibieron recursos semánticos equivalentes y corrección de problemas detectados.",
+        "Registro completo en iterations.json: cinco iteraciones por motor (diseño, capturas, check nativo, revisión del primer MP4 y eliminación de datos duplicados en plantillas). Las exportaciones previas se conservaron en out/renderer_advanced_iteration-* y se excluyen de esta tabla final. No hay evidencia de horas de autoría exactas; no se afirma igualdad cronometrada de esfuerzo. Ambos recibieron recursos semánticos equivalentes y corrección de problemas detectados.",
         "",
     ]
     for name in ["givemotion", "hyperframes"]:

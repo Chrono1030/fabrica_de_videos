@@ -91,3 +91,21 @@ def test_configuration_and_sanitized_environment(monkeypatch):
         adapters.select_adapter("givemotion").validate(
             VisualStoryboard.model_validate(fixture_data())
         )
+
+
+@pytest.mark.parametrize("name", ["givemotion", "hyperframes"])
+def test_adapter_consumes_budget_and_brand_from_contract(name, tmp_path):
+    data = fixture_data()
+    data["palette"]["gold"] = "#CCA855"
+    for budget in data["budgets"].values():
+        for key in budget:
+            budget[key] *= 2
+    board = VisualStoryboard.model_validate(data)
+    adapter = adapters.select_adapter(name)
+    adapter.build(board, tmp_path)
+    pages = "\n".join(p.read_text() for p in tmp_path.rglob("*.html"))
+    assert "#CCA855" in pages
+    assert "#E6B864" not in pages
+    assert "2400000" in pages and "1400000" in pages
+    assert "__BUDGETS__" not in pages
+    assert "__STORYBOARD__" not in pages

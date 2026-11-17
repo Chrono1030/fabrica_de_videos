@@ -3,7 +3,8 @@
   "shared": [
     "Read baseline code, reports and pinned versions; pytest 72 PASS and Ruff PASS before edits",
     "Reuse previous native commands, environment allowlist and process measurement; new engine-independent VisualStoryboard and protocol",
-    "14 boundary tests; pytest import path corrected before renders"
+    "14 boundary tests; pytest import path corrected before renders",
+    "Architecture review found duplicated numeric values in templates; removed them as sources of truth. Both templates now consume storyboard budgets for values, angles, widths, percentages and transfer; palette mapped from contract. Native inputs frozen again; interrupted lot retained separately."
   ],
   "givemotion": [
     {
@@ -23,6 +24,10 @@
       "iteration": 4,
       "change": "Full decoded MP4 frame at 2.75 s confirmed moving-overlap warning. Delay ribbon explanatory note until 3.5 s so hero amount clears it. Re-render both engines from frozen sources.",
       "evidence": "../renderer_advanced_iteration-3/givemotion/run-1/transition-2.75.png"
+    },
+    {
+      "iteration": 5,
+      "change": "Replace financial literals with storyboard budget data; compute proportional geometry and labels from contract. Consume palette, validate installed brand font. No intentional change to original example or narrative."
     }
   ],
   "hyperframes": [
@@ -42,9 +47,13 @@
     {
       "iteration": 4,
       "change": "Raise transfer callout from 26 to 28 px after native text-floor warning. Re-render both engines from frozen sources."
+    },
+    {
+      "iteration": 5,
+      "change": "Replace financial literals with storyboard budget data; compute proportional geometry and labels from contract. Consume palette, validate installed brand font. No intentional change to original example or narrative."
     }
   ],
-  "fairness": "Four logged authoring/technical correction iterations per engine. Initial four complete exports retained in out/renderer_advanced_iteration-3, excluded from final benchmark. Both engines re-rendered twice after the last correction; no exact authoring-time claim.",
+  "fairness": "Five logged design/technical/architecture iterations per engine. Earlier exports retained under out/renderer_advanced_iteration-* and excluded from final benchmark. Both engines re-rendered twice after final data-source correction. No exact authoring-time claim.",
   "excluded": "No full editorial QA, phonetic timing, TTS work, paid APIs or publication",
   "preliminary_outputs": "out/renderer_advanced_iteration-3 (four valid technical renders, superseded for legibility fixes)"
 }
