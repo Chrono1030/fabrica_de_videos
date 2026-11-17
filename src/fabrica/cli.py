@@ -29,7 +29,7 @@ def main():
     prod.add_argument("--subtitle-margin", type=int, default=320)
     prod.add_argument("--subtitle-color", default="F4EEDD")
     prod.add_argument("--subtitle-outline", type=int, default=2)
-    prod.add_argument("--mode", choices=["mock", "real"], default="mock")
+    prod.add_argument("--mode", choices=["mock", "real", "local"], default="mock")
     prod.add_argument("--script", type=Path)
     prod.add_argument("--output", type=Path, default=Path("out/jobs"))
     prod.add_argument("--job-id")

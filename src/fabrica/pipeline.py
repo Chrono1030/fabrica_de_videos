@@ -14,7 +14,7 @@ from .editorial import check
 from .gpt import generate_checked
 from .models import VideoScript
 from .render import compose, quality, subtitles
-from .tts import MockTTS, PiperTTS, duration
+from .tts import MockTTS, PiperTTS, duration, piper_fingerprint
 
 
 def digest(path):
@@ -94,8 +94,10 @@ def produce(
     subtitle_style=None,
     catalog_path=None,
 ):
-    if mode not in ("mock", "real") or not topic.strip():
+    if mode not in ("mock", "real", "local") or not topic.strip():
         raise ValueError("Modo o tema inválido")
+    if mode == "local" and script_path is None:
+        raise ValueError("Modo local requiere --script; no usa GPT")
     job_id = job_id or uuid.uuid4().hex
     if not job_id.replace("-", "").replace("_", "").isalnum():
         raise ValueError("Identificador inválido")
@@ -106,7 +108,7 @@ def produce(
 
     style = subtitle_style or SubtitleStyle()
     config = dict(
-        pipeline_version="1.5",
+        pipeline_version="2A",
         topic=topic,
         mode=mode,
         width=width,
@@ -114,6 +116,7 @@ def produce(
         mock_seconds=mock_seconds,
         subtitle_style=style.config(),
         script_sha=digest(Path(script_path)) if script_path else None,
+        tts_config=piper_fingerprint() if mode != "mock" else None,
     )
     with (job / ".lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -224,14 +227,20 @@ def produce(
             stage("CARDS", images, lambda: create_cards(script, job / "cards"))
             provider = MockTTS(mock_seconds) if mode == "mock" else PiperTTS()
             audios = [job / f"audio_{i:02}.wav" for i in range(len(script.scenes))]
-            for i, (scene, audio) in enumerate(zip(script.scenes, audios)):
-                stage(
-                    f"AUDIO_{i}",
-                    [audio],
-                    lambda s=scene, p=audio: provider.synthesize(s.narration, p),
-                )
+            try:
+                for i, (scene, audio) in enumerate(zip(script.scenes, audios)):
+                    stage(
+                        f"AUDIO_{i}",
+                        [audio],
+                        lambda s=scene, p=audio: provider.synthesize(s.narration, p),
+                    )
+            finally:
+                if hasattr(provider, "close"):
+                    provider.close()
             durations = [duration(p) for p in audios]
-            if mode == "real" and not 60 <= sum(durations) <= 90:
+            state["scene_durations"] = durations
+            save(path, state)
+            if mode != "mock" and not 60 <= sum(durations) <= 90:
                 raise ValueError(
                     "Narración real fuera del rango comercial de 60–90 segundos"
                 )

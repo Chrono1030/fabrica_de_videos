@@ -88,3 +88,22 @@ La API de GitHub respondió `Forbidden`: no se pudo consultar/editar el cuerpo d
 PR ni confirmar resultados remotos de Actions. Publicar la rama actualiza los
 commits del PR que apunte a ella. El workflow está verificado localmente por sus
 comandos; no se presenta como una ejecución remota confirmada.
+
+## Fase 2A — integración local, voz real pendiente
+
+Ver [auditoría, licencias y comandos](PHASE2_PIPER.md). Piper 1.8.0 instalado;
+proveedor con API Python persistente, timeout cancelable, WAV atómico y duración
+verificada. Normalización contextual de ARS/USD, cantidades, fechas y siglas;
+modo `local` que exige guion JSON y no utiliza GPT. Reanudación identifica voz,
+velocidad, paquete y hashes de modelo/configuración/revisión de licencia.
+
+Guion original de costo de oportunidad: cinco escenas, 185 palabras. Vista previa
+MOCK de 75.083 s a 1080×1920 generada y decodificada; fotograma inspeccionado.
+**No es el video final con narración real.** No se descargaron modelos: las fichas
+es_AR/es_MX revisadas presentan restricciones de base o procedencia incompleta.
+Comparación auditiva, benchmark de voces y video Piper quedan pendientes hasta
+contar con una voz autorizada. No hubo llamadas GPT ni publicaciones.
+
+Validación final: **37 pruebas aprobadas**, `ruff check .`, compilación Python y
+`git diff --check` aprobados. La prueba nativa de Piper usa un modelo inválido
+para comprobar errores; no certifica la síntesis ni la calidad de una voz real.

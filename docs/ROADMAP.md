@@ -42,3 +42,17 @@ PostgreSQL, varios canales, nuevos componentes animados, videos largos y optimiz
 - [ ] Confirmar ejecución remota de Actions cuando la API permita consultarla
 - [ ] Ampliar plantillas MOCK y validar generación editorial REAL
 - [ ] Fuentes verificadas, alineación fonética y revisión semántica independiente
+
+## Fase 2A — narración local
+
+- [x] Auditar fase anterior y producir MOCK con decodificación completa
+- [x] Instalar Piper 1.8.0 y adaptar API Python con reutilización por producción
+- [x] Timeout cancelable, WAV atómico/truncado, normalización ARS/USD y pruebas
+- [x] Configurar directorio, voz y velocidad; identidad de reanudación por hashes
+- [x] Guion original local y vista previa 1080×1920 de 75 s con tonos MOCK
+- [x] Revisar licencias individuales y cadena base; no descargar voces inciertas
+- [ ] Conseguir voz es_AR/es_MX con derechos documentados
+- [ ] Comparación auditiva y benchmark real de ambas regiones
+- [ ] Render Piper de 60–90 s e inspección de sincronía de subtítulos con voz
+
+Detalle: [PHASE2_PIPER.md](PHASE2_PIPER.md). Esta fase no usa GPT ni publica.

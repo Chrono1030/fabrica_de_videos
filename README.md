@@ -184,3 +184,12 @@ CI: `.github/workflows/tests.yml` instala Python 3.12, FFmpeg, fuentes y depende
 ejecuta Ruff y pytest con MP4 reducidos reales. `workflow_dispatch` ofrece demos
 1080×1920 separadas. No usa APIs pagas. Ver resultados locales y límites en
 `docs/CODEX_PROGRESS.md`; la ejecución remota depende de GitHub Actions.
+
+### Fase 2A: narración local
+
+El modo `local` exige `--script` y usa Piper sin llamar a GPT. Instalación:
+`.venv/bin/pip install -e '.[dev,piper]'`. Consultar
+[configuración, licencias y estado real de la entrega](docs/PHASE2_PIPER.md)
+antes de descargar una voz. Hay un guion original en
+`examples/costo_oportunidad.json` y una vista previa MOCK de 75 s; el video con
+voz real queda pendiente de un modelo latinoamericano autorizado.

@@ -17,8 +17,8 @@ def test_mock_wav_deterministic(tmp_path):
     assert a.read_bytes() == b.read_bytes()
     assert duration(a) == 0.25
     assert (
-        normalize("$25 y 5% del PIB")
-        == "25 dólares y 5 por ciento del producto interno bruto"
+        normalize("USD 25 y 5% del PIB")
+        == "veinticinco dólares estadounidenses y cinco por ciento del producto interno bruto"
     )
     with pytest.raises(ValueError):
         MockTTS(0)
@@ -197,15 +197,28 @@ def test_piper_local_double(tmp_path, monkeypatch):
     model.write_bytes(b"test-double-not-a-model")
     model.with_suffix(".onnx.json").write_text('{"language":{"code":"es_MX"}}')
     monkeypatch.setenv("PIPER_VOICE_MODEL", str(model))
+    monkeypatch.setenv("PIPER_EXECUTABLE", "piper")
+    import hashlib
+
+    model.with_suffix(".onnx.license.json").write_text(
+        json.dumps(
+            {
+                "sha256": hashlib.sha256(model.read_bytes()).hexdigest(),
+                "license": "test-double",
+                "evidence": ["fixture"],
+                "approved_local_use": True,
+            }
+        )
+    )
     calls = []
 
     def fake_run(args, **kwargs):
         calls.append(kwargs["input"])
-        MockTTS(0.2).synthesize("", tmp_path / "voice.wav")
+        MockTTS(0.2).synthesize("", tmp_path / "voice.partial.wav")
 
     monkeypatch.setattr(tts.subprocess, "run", fake_run)
     assert PiperTTS().synthesize("5%", tmp_path / "voice.wav") == 0.2
-    assert calls == ["5 por ciento"]
+    assert calls == ["cinco por ciento"]
 
 
 def test_short_real_audio_blocked(tmp_path, monkeypatch):
