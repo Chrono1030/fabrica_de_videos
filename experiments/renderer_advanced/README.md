@@ -38,3 +38,13 @@ explorer.exe ($p.Trim())
 ```
 
 Sustituir el nombre de distribución si corresponde. Los artefactos grandes están ignorados por Git; las fuentes y un resumen persistente quedan versionados. No hay push, merge ni publicación.
+
+Resultado final registrado: `docs/RENDERER_ADVANCED_RESULTS_20261117.md`. Baseline 72 tests; final 88 tests. Cinco iteraciones por motor; lotes previos conservados en `out/renderer_advanced_iteration-3` y `iteration-4`, excluidos del informe final. `execution-history.json` distingue los cuatro PASS finales de los intentos anteriores; un intento previo fue rechazado por el guard de fuentes al corregir la arquitectura.
+
+Smoke test reproducible del visor, después de generar el informe:
+
+```bash
+.venv/bin/python -c 'from experiments.renderer_advanced.adapters import *; (OUT/"checks").mkdir(exist_ok=True); print(execute([NODE,EXP/"verify_review.mjs",CHROME,OUT/"review.html",OUT/"checks"],timeout=120))'
+```
+
+La prueba usa Chrome headless local y videos H.264 reales; no sustituye una ejecución directa en Windows. Log JSON y captura en checks/. No modifica los MP4 ni los datos medidos.
