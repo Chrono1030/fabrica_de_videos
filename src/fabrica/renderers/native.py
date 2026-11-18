@@ -320,6 +320,8 @@ class NativeRenderer:
             raise
 
     def inspect(self, video, storyboard, directory, audio=None):
+        video, directory = Path(video).resolve(), Path(directory).resolve()
+        directory.mkdir(parents=True, exist_ok=True)
         raw = command(
             [
                 "ffprobe",

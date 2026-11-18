@@ -413,3 +413,15 @@ def test_native_pipeline_records_blocked_subprocess_and_same_engine_retry(
         state["error"]["type"] == "RenderFailure"
         and not (tmp_path / "failed/final.mp4").exists()
     )
+
+
+def test_packaged_auxiliary_repairs_never_rerender_video(tmp_path, fake_renderer):
+    factory, store, clock = factory_context(tmp_path)
+    first = factory.cycle(clock=clock, fault="uncertain")
+    job = Path(first["job"])
+    before = sha(job / "final.mp4")
+    (job / "anchors.json").write_text("corrupt auxiliary file")
+    done = factory.cycle(clock=clock + timedelta(minutes=2))
+    assert done["state"] == "SIMULATED_DONE" and fake_renderer == ["givemotion"]
+    assert sha(job / "final.mp4") == before
+    assert json.loads((job / "anchors.json").read_text())["segments"]

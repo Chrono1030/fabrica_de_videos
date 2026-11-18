@@ -64,6 +64,7 @@ def visual_stages(
         job / "render.json",
         job / "thumbnail.png",
     )
+    packaged_stage = None
     # A publication package binds an immutable asset; never silently replace it on retry.
     if (job / "metadata.json").exists():
         package = json.loads((job / "metadata.json").read_text())
@@ -85,7 +86,7 @@ def visual_stages(
         ) != sha(thumb):
             raise ValueError("Packaged render receipt or thumbnail changed")
         # Recover a lost stage marker only from immutable packaged artifacts.
-        state["stages"]["RENDER"] = {p.name: sha(p) for p in (video, metrics, thumb)}
+        packaged_stage = {p.name: sha(p) for p in (video, metrics, thumb)}
     if state.get("render_inputs") != signature:
         state["stages"].pop("RENDER", None)
     anchors = job / "anchors.json"
@@ -129,6 +130,10 @@ def visual_stages(
         )
         state["render_inputs"] = signature
 
+    if packaged_stage is not None:
+        # Auxiliary-stage repairs may invalidate downstream markers; restore only
+        # after they complete, so an immutable packaged video is never re-rendered.
+        state["stages"]["RENDER"] = packaged_stage
     stage("RENDER", [video, metrics, thumb], render_action)
     record = json.loads(metrics.read_text())
     if record["sha256"] != sha(video) or record["renderer"] != config.renderer:

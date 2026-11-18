@@ -47,8 +47,10 @@ def test_real_factory_cycle_givemotion_and_resume(tmp_path, monkeypatch):
         local_time="12:00",
         start_date=date(2026, 11, 18),
     )
+    rendering = config()
+    monkeypatch.chdir(tmp_path)
     store = FactoryStore(tmp_path / "factory.sqlite3")
-    factory = Factory(store, settings, tmp_path / "factory", config())
+    factory = Factory(store, settings, Path("factory"), rendering)
     at = datetime(2026, 11, 18, 16, tzinfo=timezone.utc)
     first = factory.cycle(clock=at, width=180, height=320, fault="uncertain")
     assert first["state"] == "RETRY_WAIT"

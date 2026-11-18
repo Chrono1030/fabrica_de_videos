@@ -11,7 +11,7 @@ from .visual_storyboard import VisualStoryboard
 
 
 def inspect_job(job):
-    job = Path(job)
+    job = Path(job).resolve()
     state = json.loads((job / "result.json").read_text())
     config = RendererConfig.model_validate(state["config"]["rendering"])
     board = VisualStoryboard.model_validate_json((job / "storyboard.json").read_text())
