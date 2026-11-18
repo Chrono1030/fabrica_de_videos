@@ -177,7 +177,7 @@ def validate_job(package, job, *, technical_check=True):
         raise ValueError("Falta portada")
     # Test fixtures may inject this function; production paths always decode the actual file.
     if technical_check:
-        if result["config"].get("pipeline_version") == "3":
+        if result["config"].get("pipeline_version") in ("3", "4"):
             from .quality import inspect_job
 
             inspect_job(job)

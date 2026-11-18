@@ -1,0 +1,7 @@
+{
+  "provider": "piper",
+  "authorization_mode": "commercial",
+  "voice_id": "REQUIRES_EXPLICIT_VERIFIED_ES_419_VOICE",
+  "voice_manifest": "../out/authorized_voice/manifest.json",
+  "max_seconds": 90
+}

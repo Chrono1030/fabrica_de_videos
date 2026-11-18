@@ -211,3 +211,64 @@ def test_audio_change_invalidates_identity(tmp_path):
     before = config.identity()
     wav.write_bytes(wav.read_bytes() + b"x")
     assert config.identity() != before
+
+
+def test_piper_voice_permissions_and_hash_are_independent(tmp_path, monkeypatch):
+    from fabrica import audio_providers
+    from fabrica.audio_providers import load_voice
+
+    monkeypatch.setattr(audio_providers, "version", lambda name: "fixture-version")
+
+    model = tmp_path / "fixture.onnx"
+    model.write_bytes(b"not-a-voice-only-contract-test")
+    Path(str(model) + ".json").write_text("{}")
+    Path(str(model) + ".license.json").write_text("{}")
+    assets = [
+        dict(
+            path=str(p),
+            sha256=sha(p),
+            source="Explicit unit fixture; never synthesized",
+            license="Test only",
+            evidence=["fixture"],
+        )
+        for p in (model, Path(str(model) + ".json"), Path(str(model) + ".license.json"))
+    ]
+    manifest = dict(
+        voice_id="fixture",
+        provider="piper",
+        engine_version="fixture-version",
+        engine_license="GPL-3.0-or-later",
+        model_version="test-fixture",
+        regional_language="es_MX",
+        artifacts=assets,
+        rights_chain=[
+            dict(
+                name="Explicit test-only permission",
+                license="test only",
+                evidence=["fixture permission"],
+                verified=True,
+            )
+        ],
+        chain_complete=True,
+        technical_execution_allowed=True,
+        test_use_authorized=True,
+        rights_status="RESEARCH_ONLY",
+    )
+    path = tmp_path / "voice.json"
+    save(path, manifest)
+    cfg = NarrationConfig(provider="piper", voice_id="fixture", voice_manifest=path)
+    assert load_voice(cfg)[1] == model
+    with pytest.raises(NarrationBlocked, match="Commercial"):
+        load_voice(cfg.model_copy(update={"authorization_mode": "commercial"}))
+    with pytest.raises(NarrationBlocked):
+        load_voice(cfg.model_copy(update={"voice_id": "other"}))
+    save(path, manifest | dict(regional_language="es_ES"))
+    with pytest.raises(NarrationBlocked, match="es_ES"):
+        load_voice(cfg)
+    save(path, manifest | dict(technical_execution_allowed=False))
+    with pytest.raises(NarrationBlocked, match="Technical"):
+        load_voice(cfg)
+    save(path, manifest)
+    model.write_bytes(b"altered")
+    with pytest.raises(NarrationBlocked, match="SHA-256"):
+        load_voice(cfg)

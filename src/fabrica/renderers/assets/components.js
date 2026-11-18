@@ -23,11 +23,11 @@ function mount(root,scene,b,index){
 const safe=b.safe_area,w=b.width-safe.left-safe.right,h=b.height-safe.top-safe.bottom,u=Math.min(w/920,h/1500),at=(el,x,y,width,height)=>Object.assign(el.style,{left:x+'px',top:y+'px',width:width+'px',...(height?{height:height+'px'}:{})});
 root.classList.add('scene-frame');for(const [k,v] of Object.entries(b.palette))root.style.setProperty('--'+k,v);
 const make=(tag,cls,value)=>{const e=document.createElement(tag);e.className=cls;if(value)e.textContent=value;root.append(e);return e};
-const brand=make('div','brand',(b.source_metadata.brand||'Mente y Capital')+(b.source_metadata.currency?' · '+b.source_metadata.currency:''));at(brand,safe.left,safe.top+.01*h,w);brand.style.fontSize=28*u+'px';
+const brand=make('div','brand',(b.source_metadata.brand||'Mente y Capital')+(b.source_metadata.currency?' · '+b.source_metadata.currency:'')+(b.source_metadata.audio_notice?' · '+b.source_metadata.audio_notice:''));at(brand,safe.left,safe.top+.01*h,w);brand.style.fontSize=28*u+'px';
 const chapter=make('div','chapter',String(index+1).padStart(2,'0')+' / '+String(b.scenes.length).padStart(2,'0'));at(chapter,safe.left,safe.top+.01*h,w);chapter.style.fontSize=28*u+'px';
 const heading=make('h1','title',scene.title);at(heading,safe.left,safe.top+.06*h,w,.14*h);heading.style.fontSize=(b.typography.heading_px||68)*u+'px';
 const graph=svg('svg',{viewBox:'0 0 920 760',class:'visual'});at(graph,safe.left,safe.top+.23*h,w,.46*h);root.append(graph);
-const narrative=make('p','narrative',scene.narrative);at(narrative,safe.left,safe.top+.70*h,w,.22*h);narrative.style.fontSize=(b.typography.body_px||40)*u+'px';narrative.dataset.segment=scene.narrative_segment_id;
+const narrative=make('p','narrative',b.source_metadata.narrative_mode==='burned_subtitles'?'':scene.narrative);at(narrative,safe.left,safe.top+.70*h,w,.22*h);narrative.style.fontSize=(b.typography.body_px||40)*u+'px';narrative.dataset.segment=scene.narrative_segment_id;
 const disclaimer=make('div','disclaimer',b.source_metadata.disclaimer||'');at(disclaimer,safe.left,safe.top+.94*h,w,.05*h);disclaimer.style.fontSize=26*u+'px';
 const progress=make('div','progress');at(progress,safe.left,safe.top+h-6*u,w,4*u);const ink=document.createElement('i');progress.append(ink);
 const old=scene.elements.map(e=>val(b,e,true));

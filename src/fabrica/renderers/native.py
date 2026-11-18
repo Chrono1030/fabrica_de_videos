@@ -319,7 +319,8 @@ class NativeRenderer:
                 ) from exc
             raise
 
-    def inspect(self, video, storyboard, directory, audio=None):
+    def inspect(self, video, storyboard, directory, audio=None, *, expect_audio=None):
+        audio = bool(audio) if expect_audio is None else expect_audio
         video, directory = Path(video).resolve(), Path(directory).resolve()
         directory.mkdir(parents=True, exist_ok=True)
         raw = command(
@@ -399,6 +400,9 @@ class NativeRenderer:
             height=b.height,
             fps=b.fps,
             audio=bool(audio),
+            audio_sample_rate=int(sounds[0]["sample_rate"]) if sounds else None,
+            audio_channels=int(sounds[0]["channels"]) if sounds else None,
+            audio_duration=float(sounds[0]["duration"]) if sounds else None,
             editorial_verified=False,
             framehash=hashlib.sha256("\n".join(rows).encode()).hexdigest(),
         )

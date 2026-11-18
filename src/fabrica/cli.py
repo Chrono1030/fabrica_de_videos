@@ -16,7 +16,8 @@ def load(path: Path) -> VideoScript:
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="fabrica", description="Fábrica local de videos educativos con renderizadores intercambiables"
+        prog="fabrica",
+        description="Fábrica local de videos educativos con renderizadores intercambiables",
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
     prod = sub.add_parser("produce", help="Producir MP4 local; no publica")

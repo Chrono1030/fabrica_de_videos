@@ -14,6 +14,10 @@ def inspect_job(job):
     job = Path(job).resolve()
     state = json.loads((job / "result.json").read_text())
     config = RendererConfig.model_validate(state["config"]["rendering"])
+    if state["config"].get("pipeline_version") == "4":
+        from .narration_composition import inspect_narrated_job
+
+        return inspect_narrated_job(job, config)
     board = VisualStoryboard.model_validate_json((job / "storyboard.json").read_text())
     manifest = state["config"].get("audio")
     audio = AudioTrack.model_validate(manifest) if manifest else None

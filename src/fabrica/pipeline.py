@@ -97,6 +97,7 @@ def produce(
     renderer_config=None,
     storyboard_path=None,
     audio=None,
+    narration_config=None,
 ):
     if mode not in ("mock", "real", "local") or not topic.strip():
         raise ValueError("Modo o tema inválido")
@@ -151,6 +152,15 @@ def produce(
         raise ValueError(
             "Legacy jobs do not accept a VisualStoryboard or external audio"
         )
+    if narration_config is not None:
+        from .audio_providers import NarrationConfig
+
+        narration_config = NarrationConfig.model_validate(narration_config)
+        if engine == "legacy" or audio is not None:
+            raise ValueError(
+                "Narration requires a native renderer and no separate AudioTrack"
+            )
+        config.update(pipeline_version="4", narration=narration_config.identity())
     with (job / ".lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         path = job / "result.json"
@@ -160,7 +170,24 @@ def produce(
             else dict(config=config, stages={}, events=[], costs=[], api_pending=False)
         )
         if state["config"] != config:
-            raise ValueError("El trabajo existente tiene otra configuración")
+            old = state["config"]
+            mutable = {"narration", "script_sha", "storyboard_sha"}
+            if (
+                old.get("pipeline_version") != "4"
+                or config.get("pipeline_version") != "4"
+                or (job / "metadata.json").exists()
+                or (job / "publication-binding.json").exists()
+                or {k: v for k, v in old.items() if k not in mutable}
+                != {k: v for k, v in config.items() if k not in mutable}
+            ):
+                raise ValueError("El trabajo existente tiene otra configuración")
+            state.setdefault("config_history", []).append(old)
+            state["config"] = config
+            if old.get("script_sha") != config.get("script_sha"):
+                state["stages"].pop("SCRIPT", None)
+                state["stages"].pop("STORYBOARD", None)
+            if old.get("storyboard_sha") != config.get("storyboard_sha"):
+                state["stages"].pop("STORYBOARD", None)
 
         def event(status):
             state["status"] = status
@@ -266,6 +293,7 @@ def produce(
                     save_state=save,
                     storyboard_path=storyboard_path,
                     audio=audio,
+                    narration_config=narration_config,
                 )
             else:
                 images = [
@@ -329,6 +357,7 @@ def produce(
                 if list(job.glob("*.partial.mp4")):
                     raise ValueError("Archivo incompleto presente")
             state.pop("error", None)
+            state.pop("block_reason", None)
             if engine == "legacy":
                 state.update(
                     audio_simulated=mode == "mock",
@@ -340,6 +369,8 @@ def produce(
             event("TECHNICALLY_READY")
             return job
         except Exception as exc:
+            if hasattr(exc, "code"):
+                state["block_reason"] = exc.code
             state["error"] = {
                 "type": type(exc).__name__,
                 "message": str(exc)

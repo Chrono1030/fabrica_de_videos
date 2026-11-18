@@ -1,0 +1,12 @@
+{
+  "provider": "mock",
+  "authorization_mode": "test",
+  "mock_seconds": 2.0,
+  "phrase_pause": 0.08,
+  "scene_pause": 0.25,
+  "max_seconds": 90,
+  "sample_rate": 48000,
+  "channels": 1,
+  "subtitle_size": 44,
+  "subtitle_margin": 400
+}

@@ -114,10 +114,37 @@ class NarrationTimeline(StrictModel):
             raise ValueError(
                 "Narration total differs from measured segments and pauses"
             )
+        scene_cursor = 0.0
+        seen = set()
+        for span in self.scene_spans:
+            sid = span["scene_id"]
+            group = [s for s in self.segments if s.scene_id == sid]
+            if (
+                sid in seen
+                or not group
+                or abs(span["start"] - scene_cursor) > 1e-7
+                or abs(group[0].start - span["start"]) > 1e-7
+                or abs(group[-1].end + group[-1].pause_after - span["end"]) > 1e-7
+            ):
+                raise ValueError(
+                    "Scene spans must exactly cover their measured narration"
+                )
+            seen.add(sid)
+            scene_cursor = span["end"]
+        if (
+            seen != {s.scene_id for s in self.segments}
+            or abs(scene_cursor - self.duration) > 1e-7
+        ):
+            raise ValueError("Scene spans do not cover the narration timeline")
         return self
 
 
 def calculate_timing(board, records, config):
+    expected = [
+        (r["segment_id"], r["scene_id"]) for r in plan_narration(board, config.currency)
+    ]
+    if [(r["segment_id"], r["scene_id"]) for r in records] != expected:
+        raise ValueError("Measured segments differ from the narration plan")
     if config.sample_rate % board.fps:
         raise ValueError("Sample rate must support an exact video frame grid")
     per_frame = config.sample_rate // board.fps

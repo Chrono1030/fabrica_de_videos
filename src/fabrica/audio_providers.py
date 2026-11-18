@@ -67,6 +67,13 @@ class NarrationConfig(Contract):
     subtitle_size: int = Field(default=44, ge=24, le=52)
     subtitle_margin: int = Field(default=400, ge=200, le=400)
 
+    @field_validator("mock_durations")
+    @classmethod
+    def bounded_durations(cls, value):
+        if any(not 0.1 <= seconds <= 30 for seconds in value.values()):
+            raise ValueError("MOCK phrase duration must be between 0.1 and 30 seconds")
+        return value
+
     @field_validator("voice_manifest", "external_manifest")
     @classmethod
     def absolute(cls, value):

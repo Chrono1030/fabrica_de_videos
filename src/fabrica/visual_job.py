@@ -24,7 +24,12 @@ def visual_stages(
     save_state,
     storyboard_path=None,
     audio=None,
+    narration_config=None,
 ):
+    board_file = job / (
+        "base_storyboard.json" if narration_config else "storyboard.json"
+    )
+
     def make_board():
         if storyboard_path:
             board = VisualStoryboard.model_validate_json(
@@ -46,16 +51,29 @@ def visual_stages(
             board = board.model_copy(update={"audio": "external"})
         board = VisualStoryboard.model_validate(board.model_dump())
         validate_correspondence(script, board)
-        save_state(job / "storyboard.json", board.model_dump(mode="json"))
+        save_state(board_file, board.model_dump(mode="json"))
 
-    stage("STORYBOARD", [job / "storyboard.json"], make_board)
-    board = VisualStoryboard.model_validate_json((job / "storyboard.json").read_text())
+    stage("STORYBOARD", [board_file], make_board)
+    board = VisualStoryboard.model_validate_json(board_file.read_text())
     validate_correspondence(script, board)
     if (board.width, board.height) != (
         state["config"]["width"],
         state["config"]["height"],
     ):
         raise ValueError("Storyboard resolution differs from job configuration")
+    if narration_config:
+        from .narration_composition import narrated_stages
+
+        narrated_stages(
+            board=board,
+            job=job,
+            job_id=job_id,
+            config=config,
+            narration_config=narration_config,
+            state=state,
+            save=save_state,
+        )
+        return
     renderer = select_renderer(config)
     inputs = renderer.inputs(board, audio)
     signature = hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()

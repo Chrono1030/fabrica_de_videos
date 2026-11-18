@@ -14,6 +14,7 @@ def add_options(parser):
     parser.add_argument("--scene-seconds", type=float)
     parser.add_argument("--storyboard", type=Path)
     parser.add_argument("--audio-manifest", type=Path)
+    parser.add_argument("--narration-config", type=Path)
 
 
 def options(args):
@@ -46,7 +47,26 @@ def options(args):
         )
         audio = AudioTrack.model_validate(data)
         audio.verify()
-    return dict(renderer_config=config, storyboard_path=args.storyboard, audio=audio)
+    narration = None
+    if getattr(args, "narration_config", None):
+        from .audio_providers import NarrationConfig
+
+        data = json.loads(args.narration_config.read_text())
+        for key in ("voice_manifest", "external_manifest"):
+            if data.get(key):
+                path = Path(data[key])
+                data[key] = (
+                    path
+                    if path.is_absolute()
+                    else (args.narration_config.parent / path).resolve()
+                )
+        narration = NarrationConfig.model_validate(data)
+    return dict(
+        renderer_config=config,
+        storyboard_path=args.storyboard,
+        audio=audio,
+        narration_config=narration,
+    )
 
 
 def add_command(sub):

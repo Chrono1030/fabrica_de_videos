@@ -42,6 +42,7 @@ class Factory:
         script_path=None,
         storyboard_path=None,
         audio=None,
+        narration_config=None,
     ):
         clock = clock or datetime.now(timezone.utc)
         with self.store.path.with_suffix(".worker.lock").open("a") as lock:
@@ -103,6 +104,7 @@ class Factory:
                     renderer_config=self.renderer_config,
                     storyboard_path=storyboard_path,
                     audio=audio,
+                    narration_config=narration_config,
                 )
                 result = json.loads((job / "result.json").read_text())
                 try:
@@ -120,6 +122,17 @@ class Factory:
                         ]
                         if audio:
                             paths.append(audio.path)
+                    if result["config"].get("pipeline_version") == "4":
+                        paths += [
+                            job / name
+                            for name in (
+                                "narration.wav",
+                                "narration_timeline.json",
+                                "subtitles.srt",
+                                "subtitles.ass",
+                                "manifest.json",
+                            )
+                        ]
                     resources = [
                         Resource(
                             path=str(p.resolve()),
@@ -159,6 +172,11 @@ class Factory:
                         synthetic_reason="Tonos y gráficos abstractos; no simula hechos reales.",
                         simulated=True,
                     )
+                    if result["config"].get("pipeline_version") == "4":
+                        save(
+                            job / "publication-binding.json",
+                            {"asset_hash": package.asset_hash},
+                        )
                     self.store.save_package(package)
                 validate_correspondence(package, script)
                 if package.asset_hash != sha256(job / "final.mp4"):

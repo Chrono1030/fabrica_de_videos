@@ -82,6 +82,8 @@ def prepare_narration(board, job, job_id, config, renderer_config, stages, save)
     audio = job / "audio"
     audio.mkdir(exist_ok=True)
     requests = plan_narration(board, config.currency)
+    if set(config.mock_durations) - {r["segment_id"] for r in requests}:
+        raise ValueError("Unknown segment in MOCK duration overrides")
     request_path = job / "narration_request.json"
     stages.run(
         "NARRATION_PLAN",
