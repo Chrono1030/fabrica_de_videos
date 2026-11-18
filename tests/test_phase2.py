@@ -147,12 +147,14 @@ def test_local_requires_script_and_no_api(tmp_path, monkeypatch):
 
     monkeypatch.setattr(pipeline, "generate_checked", forbidden)
     with pytest.raises(ValueError, match="requiere --script"):
-        pipeline.produce("Costo", mode="local", root=tmp_path)
+        pipeline.produce("Costo", mode="local", root=tmp_path, renderer="legacy")
     script = tmp_path / "script.json"
     script.write_text(pipeline.mock_script("Costo").model_dump_json())
-    monkeypatch.setattr(pipeline, "PiperTTS", lambda: tts.MockTTS(.2))
+    monkeypatch.setattr(pipeline, "PiperTTS", lambda: tts.MockTTS(0.2))
     with pytest.raises(ValueError, match="60–90"):
-        pipeline.produce("Costo", mode="local", root=tmp_path, script_path=script)
+        pipeline.produce(
+            "Costo", mode="local", root=tmp_path, script_path=script, renderer="legacy"
+        )
 
 
 def test_fingerprint_tracks_model_bytes(tmp_path, monkeypatch):

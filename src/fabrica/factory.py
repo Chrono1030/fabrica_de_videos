@@ -10,7 +10,13 @@ from importlib.resources import files
 from pathlib import Path
 
 from .economics import VideoMetrics, metrics_report, save_metrics
-from .metadata import Originality, Resource, generate_package, sha256
+from .metadata import (
+    Originality,
+    Resource,
+    generate_package,
+    sha256,
+    validate_correspondence,
+)
 from .models import VideoScript
 from .pipeline import mock_script, produce, save
 from .scheduler import Scheduler
@@ -18,14 +24,25 @@ from .youtube import MockYouTubeClient, YouTubePublisher, prepare_upload
 
 
 class Factory:
-    def __init__(self, store, config, root):
+    def __init__(self, store, config, root, renderer_config=None):
+        self.renderer_config = renderer_config
         self.store, self.scheduler, self.root = (
             store,
             Scheduler(store, config),
             Path(root),
         )
 
-    def cycle(self, *, clock=None, width=1080, height=1920, fault=None):
+    def cycle(
+        self,
+        *,
+        clock=None,
+        width=1080,
+        height=1920,
+        fault=None,
+        script_path=None,
+        storyboard_path=None,
+        audio=None,
+    ):
         clock = clock or datetime.now(timezone.utc)
         with self.store.path.with_suffix(".worker.lock").open("a") as lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -41,10 +58,28 @@ class Factory:
             metrics = self._prior_metrics(job_id)
             errors, state = 0, None
             try:
+                source_script = Path(script_path) if script_path else None
                 script_path = self.root / "scripts" / f"{job_id}.json"
+                if (
+                    source_script
+                    and script_path.exists()
+                    and sha256(source_script) != sha256(script_path)
+                ):
+                    supplied = VideoScript.model_validate_json(
+                        source_script.read_text()
+                    )
+                    prior_script = VideoScript.model_validate_json(
+                        script_path.read_text()
+                    )
+                    if supplied != prior_script:
+                        raise ValueError("Job already has a different script")
                 script_path.parent.mkdir(parents=True, exist_ok=True)
                 if not script_path.exists():
-                    if slot["title"] == "Elegir una alternativa implica renunciar":
+                    if source_script:
+                        script = VideoScript.model_validate_json(
+                            source_script.read_text()
+                        )
+                    elif slot["title"] == "Elegir una alternativa implica renunciar":
                         script = VideoScript.model_validate_json(
                             files("fabrica")
                             .joinpath("data/costo_oportunidad.json")
@@ -65,6 +100,9 @@ class Factory:
                     height=height,
                     mock_seconds=75 / len(script.scenes),
                     catalog_path=self.store.path,
+                    renderer_config=self.renderer_config,
+                    storyboard_path=storyboard_path,
+                    audio=audio,
                 )
                 result = json.loads((job / "result.json").read_text())
                 try:
@@ -74,6 +112,14 @@ class Factory:
                         *sorted((job / "cards").glob("*.png")),
                         *sorted(job.glob("audio_*.wav")),
                     ]
+                    if result.get("renderer") != "legacy":
+                        paths = [
+                            job / "script.json",
+                            job / "storyboard.json",
+                            job / "thumbnail.png",
+                        ]
+                        if audio:
+                            paths.append(audio.path)
                     resources = [
                         Resource(
                             path=str(p.resolve()),
@@ -93,7 +139,9 @@ class Factory:
                         job_id=job_id,
                         channel_id="MOCK_MENTE_Y_CAPITAL",
                         video_path=job / "final.mp4",
-                        thumbnail_path=job / "cards/scene_01.png",
+                        thumbnail_path=Path(
+                            result.get("thumbnail", job / "cards/scene_01.png")
+                        ),
                         category=slot["category"],
                         category_id="27",
                         duration=result["duration"],
@@ -112,6 +160,11 @@ class Factory:
                         simulated=True,
                     )
                     self.store.save_package(package)
+                validate_correspondence(package, script)
+                if package.asset_hash != sha256(job / "final.mp4"):
+                    raise ValueError(
+                        "Existing publication package refers to another video"
+                    )
                 save(job / "metadata.json", package.model_dump(mode="json"))
                 save(job / "upload_request.json", prepare_upload(package))
                 publisher = YouTubePublisher(
@@ -178,14 +231,31 @@ class Factory:
                     VideoMetrics(
                         job_id=job_id,
                         simulated=True,
+                        renderer=json.loads((job / "result.json").read_text()).get(
+                            "renderer"
+                        )
+                        if (job / "result.json").exists()
+                        else None,
+                        render_wall_seconds=json.loads(
+                            (job / "render.json").read_text()
+                        ).get("render_wall_seconds")
+                        if (job / "render.json").exists()
+                        else None,
+                        render_report_path=str(job / "render.json")
+                        if (job / "render.json").exists()
+                        else None,
+                        storyboard_path=str(job / "storyboard.json")
+                        if (job / "storyboard.json").exists()
+                        else None,
                         production_seconds=metrics.get("production_seconds", 0)
                         + time.monotonic()
                         - started,
                         cpu_seconds=metrics.get("cpu_seconds", 0)
-                        + after.ru_utime
-                        + after.ru_stime
-                        - before.ru_utime
-                        - before.ru_stime,
+                        + max(
+                            0,
+                            (after.ru_utime - before.ru_utime)
+                            + (after.ru_stime - before.ru_stime),
+                        ),
                         peak_rss_kib=max(
                             after.ru_maxrss,
                             resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,

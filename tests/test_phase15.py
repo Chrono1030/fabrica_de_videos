@@ -69,7 +69,14 @@ def test_subtitle_cues_timing_and_style(tmp_path):
 
 
 def test_burned_subtitles_change_pixels_and_track_mode(tmp_path):
-    a = produce("Costo", root=tmp_path / "a", width=180, height=320, mock_seconds=0.5)
+    a = produce(
+        "Costo",
+        root=tmp_path / "a",
+        width=180,
+        height=320,
+        mock_seconds=0.5,
+        renderer="legacy",
+    )
     b = produce(
         "Costo",
         root=tmp_path / "b",
@@ -77,6 +84,7 @@ def test_burned_subtitles_change_pixels_and_track_mode(tmp_path):
         height=320,
         mock_seconds=0.5,
         subtitle_style=SubtitleStyle(burn=False),
+        renderer="legacy",
     )
 
     def frame(path):
@@ -131,6 +139,7 @@ def test_autonomous_production_and_retry(tmp_path):
         width=180,
         height=320,
         mock_seconds=0.2,
+        renderer="legacy",
     )
     assert Catalog(path).reserve("auto")["state"] == "TECHNICALLY_READY"
     assert (
@@ -141,6 +150,7 @@ def test_autonomous_production_and_retry(tmp_path):
             width=180,
             height=320,
             mock_seconds=0.2,
+            renderer="legacy",
         )
         == job
     )

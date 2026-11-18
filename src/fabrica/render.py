@@ -1,4 +1,4 @@
-"""Composición acotada en memoria y QA técnico mediante FFmpeg."""
+"""LEGACY Pillow/FFmpeg composition; shared subtitles retained. New jobs use native renderers."""
 
 import json
 import subprocess

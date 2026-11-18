@@ -20,6 +20,11 @@ def main():
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
     prod = sub.add_parser("produce", help="Producir MP4 local; no publica")
+    from .renderer_cli import add_command, add_options, options
+    from .renderer_cli import dispatch as renderer_dispatch
+
+    add_command(sub)
+    add_options(prod)
     prod.add_argument("--topic")
     prod.add_argument("--auto", action="store_true")
     prod.add_argument("--catalog", type=Path, default=Path("out/editorial.sqlite3"))
@@ -49,7 +54,7 @@ def main():
 
     add_commands(sub)
     args = parser.parse_args()
-    if dispatch(args):
+    if renderer_dispatch(args) or dispatch(args):
         return
     if args.cmd == "produce":
         from .pipeline import produce, produce_auto
@@ -72,6 +77,7 @@ def main():
             height=args.height,
             mock_seconds=args.mock_seconds,
             subtitle_style=style,
+            **options(args),
         )
         if args.auto:
             if args.topic:

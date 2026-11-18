@@ -31,3 +31,6 @@ experiments/renderer_ab/engines/chrome-*/
 experiments/renderer_ab/engines/browser-libs/
 
 experiments/renderer_ab/engines/chrome157/
+
+# Optional isolated application renderers (selected engines only)
+.renderers/

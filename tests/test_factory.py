@@ -6,6 +6,7 @@ import pytest
 
 from fabrica.factory import Factory
 from fabrica.factory_store import FactoryStore
+from fabrica.renderers.runtime import RendererConfig
 from fabrica.scheduler import ScheduleConfig
 
 
@@ -24,12 +25,22 @@ def test_complete_mock_cycle_restart_and_metrics(tmp_path, monkeypatch):
         pipeline, "generate_checked", lambda *a, **kw: pytest.fail("GPT prohibido")
     )
     store = FactoryStore(tmp_path / "state.sqlite3")
-    factory = Factory(store, config(), tmp_path / "jobs")
+    factory = Factory(
+        store,
+        config(),
+        tmp_path / "jobs",
+        renderer_config=RendererConfig(renderer="legacy"),
+    )
     clock = datetime(2026, 11, 17, 16, tzinfo=timezone.utc)
     result = factory.cycle(clock=clock, width=180, height=320, fault="uncertain")
     assert result["state"] == "RETRY_WAIT"
     job_id = result["job_id"]
-    restarted = Factory(FactoryStore(store.path), config(), tmp_path / "jobs")
+    restarted = Factory(
+        FactoryStore(store.path),
+        config(),
+        tmp_path / "jobs",
+        renderer_config=RendererConfig(renderer="legacy"),
+    )
     done = restarted.cycle(clock=clock + timedelta(minutes=2), width=180, height=320)
     assert done["job_id"] == job_id and done["state"] == "SIMULATED_DONE"
     assert restarted.cycle(
@@ -53,7 +64,12 @@ def test_complete_mock_cycle_restart_and_metrics(tmp_path, monkeypatch):
 
 def test_worker_lock_prevents_duplicate_cycle(tmp_path):
     store = FactoryStore(tmp_path / "state.sqlite3")
-    factory = Factory(store, config(), tmp_path / "jobs")
+    factory = Factory(
+        store,
+        config(),
+        tmp_path / "jobs",
+        renderer_config=RendererConfig(renderer="legacy"),
+    )
     with store.path.with_suffix(".worker.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         with pytest.raises(BlockingIOError):

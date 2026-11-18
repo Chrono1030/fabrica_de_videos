@@ -20,6 +20,10 @@ class VideoMetrics(Contract):
     api_calls: int = Field(default=0, ge=0)
     errors: int = Field(default=0, ge=0)
     retries: int = Field(default=0, ge=0)
+    renderer: str | None = None
+    render_wall_seconds: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    render_report_path: str | None = None
+    storyboard_path: str | None = None
     human_hours: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     actual_revenue_usd: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     actual_revenue_source: str | None = None

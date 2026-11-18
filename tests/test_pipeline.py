@@ -54,7 +54,7 @@ def test_real_mp4_resume_and_corruption(tmp_path):
         height=320,
         mock_seconds=0.3,
     )
-    job = pipeline.produce(**args)
+    job = pipeline.produce(**args, renderer="legacy")
     state = json.loads((job / "result.json").read_text())
     assert state["status"] == "TECHNICALLY_READY"
     assert state["costs"] == [] and state["audio_simulated"]
@@ -64,13 +64,13 @@ def test_real_mp4_resume_and_corruption(tmp_path):
     before = {
         p: p.stat().st_mtime_ns for p in [job / "final.mp4", job / "audio_00.wav"]
     }
-    pipeline.produce(**args)
+    pipeline.produce(**args, renderer="legacy")
     assert all(p.stat().st_mtime_ns == m for p, m in before.items())
     (job / "final.mp4").write_bytes(b"broken")
-    pipeline.produce(**args)
+    pipeline.produce(**args, renderer="legacy")
     assert (job / "final.mp4").stat().st_size > 1000
     with pytest.raises(ValueError):
-        pipeline.produce(**(args | {"topic": "Otro"}))
+        pipeline.produce(**(args | {"topic": "Otro"}), renderer="legacy")
     with pytest.raises((AssertionError, ValueError)):
         quality(job / "final.mp4", 360, 640, 1.2, job / "subtitles.srt")
 
@@ -91,12 +91,12 @@ def test_failure_and_retry(tmp_path, monkeypatch):
 
     monkeypatch.setattr(pipeline, "compose", fail)
     with pytest.raises(RuntimeError):
-        pipeline.produce(**args)
+        pipeline.produce(**args, renderer="legacy")
     job = tmp_path / "retry"
     assert json.loads((job / "result.json").read_text())["status"] == "BLOCKED"
     audio_mtime = (job / "audio_00.wav").stat().st_mtime_ns
     monkeypatch.setattr(pipeline, "compose", original)
-    pipeline.produce(**args)
+    pipeline.produce(**args, renderer="legacy")
     assert (job / "audio_00.wav").stat().st_mtime_ns == audio_mtime
 
 
@@ -136,11 +136,11 @@ def test_api_failure_reservation_blocks_retry(tmp_path, monkeypatch):
     monkeypatch.setenv("MAX_API_BUDGET_USD", "2")
     monkeypatch.setenv("OPENAI_REQUEST_RESERVE_USD", "1")
     with pytest.raises(GenerationError):
-        pipeline.produce("Costo", "real", tmp_path, "api")
+        pipeline.produce("Costo", "real", tmp_path, "api", renderer="legacy")
     state = json.loads((tmp_path / "api/result.json").read_text())
     assert state["api_pending"]
     with pytest.raises(RuntimeError, match="conciliar"):
-        pipeline.produce("Costo", "real", tmp_path, "api")
+        pipeline.produce("Costo", "real", tmp_path, "api", renderer="legacy")
     assert json.loads((tmp_path / "budget.json").read_text())["reserved_usd"] == 1
 
 
@@ -149,7 +149,11 @@ def test_invalid_script_blocked(tmp_path):
     script.write_text("{}")
     with pytest.raises(ValueError):
         pipeline.produce(
-            "Costo", root=tmp_path / "jobs", job_id="bad", script_path=script
+            "Costo",
+            root=tmp_path / "jobs",
+            job_id="bad",
+            script_path=script,
+            renderer="legacy",
         )
     assert (
         json.loads((tmp_path / "jobs/bad/result.json").read_text())["status"]
@@ -226,5 +230,7 @@ def test_short_real_audio_blocked(tmp_path, monkeypatch):
     script.write_text(pipeline.mock_script("Costo").model_dump_json())
     monkeypatch.setattr(pipeline, "PiperTTS", lambda: MockTTS(0.2))
     with pytest.raises(ValueError, match="60–90"):
-        pipeline.produce("Costo", "real", tmp_path / "jobs", "short", script)
+        pipeline.produce(
+            "Costo", "real", tmp_path / "jobs", "short", script, renderer="legacy"
+        )
     assert not (tmp_path / "jobs/short/final.mp4").exists()

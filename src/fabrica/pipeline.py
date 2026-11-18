@@ -93,6 +93,10 @@ def produce(
     mock_seconds=1.0,
     subtitle_style=None,
     catalog_path=None,
+    renderer=None,
+    renderer_config=None,
+    storyboard_path=None,
+    audio=None,
 ):
     if mode not in ("mock", "real", "local") or not topic.strip():
         raise ValueError("Modo o tema inválido")
@@ -104,8 +108,23 @@ def produce(
     root = Path(root)
     job = root / job_id
     job.mkdir(parents=True, exist_ok=True)
+    from .renderers.runtime import RendererConfig
     from .subtitle_style import SubtitleStyle
 
+    prior_path = job / "result.json"
+    prior = json.loads(prior_path.read_text()) if prior_path.exists() else None
+    # Existing pre-Phase-3 jobs keep their recorded legacy engine; never a failure fallback.
+    historical = prior and prior["config"].get("pipeline_version") == "2A"
+    if (
+        renderer_config is not None
+        and renderer is not None
+        and renderer_config.renderer != renderer
+    ):
+        raise ValueError("Conflicting renderer selections")
+    chosen = renderer_config or RendererConfig(
+        renderer=renderer or ("legacy" if historical else "givemotion")
+    )
+    engine = chosen.renderer
     style = subtitle_style or SubtitleStyle()
     config = dict(
         pipeline_version="2A",
@@ -116,8 +135,22 @@ def produce(
         mock_seconds=mock_seconds,
         subtitle_style=style.config(),
         script_sha=digest(Path(script_path)) if script_path else None,
-        tts_config=piper_fingerprint() if mode != "mock" else None,
+        tts_config=piper_fingerprint()
+        if mode != "mock" and engine == "legacy"
+        else None,
     )
+    if engine != "legacy":
+        config.update(
+            pipeline_version="3",
+            renderer=engine,
+            rendering=chosen.model_dump(mode="json"),
+            storyboard_sha=digest(Path(storyboard_path)) if storyboard_path else None,
+            audio=audio.model_dump(mode="json") if audio else None,
+        )
+    elif storyboard_path or audio:
+        raise ValueError(
+            "Legacy jobs do not accept a VisualStoryboard or external audio"
+        )
     with (job / ".lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         path = job / "result.json"
@@ -220,71 +253,90 @@ def produce(
             save(path, state)
             if issues:
                 raise ValueError("; ".join(issues))
-            images = [
-                job / "cards" / f"scene_{i:02}.png"
-                for i in range(1, len(script.scenes) + 1)
-            ]
-            stage("CARDS", images, lambda: create_cards(script, job / "cards"))
-            provider = MockTTS(mock_seconds) if mode == "mock" else PiperTTS()
-            audios = [job / f"audio_{i:02}.wav" for i in range(len(script.scenes))]
-            try:
-                for i, (scene, audio) in enumerate(zip(script.scenes, audios)):
-                    stage(
-                        f"AUDIO_{i}",
-                        [audio],
-                        lambda s=scene, p=audio: provider.synthesize(s.narration, p),
-                    )
-            finally:
-                if hasattr(provider, "close"):
-                    provider.close()
-            durations = [duration(p) for p in audios]
-            state["scene_durations"] = durations
-            save(path, state)
-            if mode != "mock" and not 60 <= sum(durations) <= 90:
-                raise ValueError(
-                    "Narración real fuera del rango comercial de 60–90 segundos"
+            if engine != "legacy":
+                from .visual_job import visual_stages
+
+                visual_stages(
+                    script=script,
+                    job=job,
+                    job_id=job_id,
+                    config=chosen,
+                    state=state,
+                    stage=stage,
+                    save_state=save,
+                    storyboard_path=storyboard_path,
+                    audio=audio,
                 )
-            srt = job / "subtitles.srt"
-            stage(
-                "SUBTITLES",
-                [srt],
-                lambda: subtitles(script.scenes, durations, srt, mode == "mock"),
-            )
-            video = job / "final.mp4"
-            # Renderizar de nuevo si cualquier entrada cambió desde la última composición.
-            inputs = hashlib.sha256(
-                "".join(digest(p) for p in images + audios + [srt]).encode()
-            ).hexdigest()
-            if state.get("render_inputs") != inputs:
-                state["stages"].pop("RENDER", None)
-            stage(
-                "RENDER",
-                [video],
-                lambda: compose(
-                    images,
-                    audios,
-                    durations,
-                    srt,
-                    video,
-                    width,
-                    height,
-                    script.scenes,
-                    style,
-                ),
-            )
-            state["render_inputs"] = inputs
-            state["quality"] = quality(
-                video, width, height, sum(durations), srt, style.burn
-            )
-            if list(job.glob("*.partial.mp4")):
-                raise ValueError("Archivo incompleto presente")
+            else:
+                images = [
+                    job / "cards" / f"scene_{i:02}.png"
+                    for i in range(1, len(script.scenes) + 1)
+                ]
+                stage("CARDS", images, lambda: create_cards(script, job / "cards"))
+                provider = MockTTS(mock_seconds) if mode == "mock" else PiperTTS()
+                audios = [job / f"audio_{i:02}.wav" for i in range(len(script.scenes))]
+                try:
+                    for i, (scene, audio) in enumerate(zip(script.scenes, audios)):
+                        stage(
+                            f"AUDIO_{i}",
+                            [audio],
+                            lambda s=scene, p=audio: provider.synthesize(
+                                s.narration, p
+                            ),
+                        )
+                finally:
+                    if hasattr(provider, "close"):
+                        provider.close()
+                durations = [duration(p) for p in audios]
+                state["scene_durations"] = durations
+                save(path, state)
+                if mode != "mock" and not 60 <= sum(durations) <= 90:
+                    raise ValueError(
+                        "Narración real fuera del rango comercial de 60–90 segundos"
+                    )
+                srt = job / "subtitles.srt"
+                stage(
+                    "SUBTITLES",
+                    [srt],
+                    lambda: subtitles(script.scenes, durations, srt, mode == "mock"),
+                )
+                video = job / "final.mp4"
+                # Renderizar de nuevo si cualquier entrada cambió desde la última composición.
+                inputs = hashlib.sha256(
+                    "".join(digest(p) for p in images + audios + [srt]).encode()
+                ).hexdigest()
+                if state.get("render_inputs") != inputs:
+                    state["stages"].pop("RENDER", None)
+                stage(
+                    "RENDER",
+                    [video],
+                    lambda: compose(
+                        images,
+                        audios,
+                        durations,
+                        srt,
+                        video,
+                        width,
+                        height,
+                        script.scenes,
+                        style,
+                    ),
+                )
+                state["render_inputs"] = inputs
+                state["quality"] = quality(
+                    video, width, height, sum(durations), srt, style.burn
+                )
+                if list(job.glob("*.partial.mp4")):
+                    raise ValueError("Archivo incompleto presente")
             state.pop("error", None)
-            state.update(
-                audio_simulated=mode == "mock",
-                publish_enabled=False,
-                editorial_status="REQUIRES_REVIEW",
-                duration=sum(durations),
-            )
+            if engine == "legacy":
+                state.update(
+                    audio_simulated=mode == "mock",
+                    renderer="legacy",
+                    publish_enabled=False,
+                    editorial_status="REQUIRES_REVIEW",
+                    duration=sum(durations),
+                )
             event("TECHNICALLY_READY")
             return job
         except Exception as exc:

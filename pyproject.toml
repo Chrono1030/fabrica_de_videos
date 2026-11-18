@@ -23,10 +23,11 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = ["native_renderer: real local Node/Chromium renderer integration (explicit opt-in)"]
 
 # Mismas reglas que el workflow de CI, independientes del entorno de ejecución.
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I"]
 
 [tool.setuptools.package-data]
-fabrica = ["data/*.json"]
+fabrica = ["data/*.json", "renderers/assets/*", "renderers/*.json", "renderers/locks/*/*.json"]

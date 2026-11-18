@@ -177,15 +177,20 @@ def validate_job(package, job, *, technical_check=True):
         raise ValueError("Falta portada")
     # Test fixtures may inject this function; production paths always decode the actual file.
     if technical_check:
-        q = result["quality"]
-        quality(
-            video,
-            q["width"],
-            q["height"],
-            result["duration"],
-            job / "subtitles.srt",
-            result["config"]["subtitle_style"]["burn"],
-        )
+        if result["config"].get("pipeline_version") == "3":
+            from .quality import inspect_job
+
+            inspect_job(job)
+        else:
+            q = result["quality"]
+            quality(
+                video,
+                q["width"],
+                q["height"],
+                result["duration"],
+                job / "subtitles.srt",
+                result["config"]["subtitle_style"]["burn"],
+            )
     return result
 
 

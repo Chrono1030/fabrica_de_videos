@@ -23,6 +23,7 @@ def rendered(tmp_path_factory):
         width=180,
         height=320,
         mock_seconds=0.3,
+        renderer="legacy",
     )
 
 

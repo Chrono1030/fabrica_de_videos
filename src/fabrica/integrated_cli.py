@@ -26,6 +26,10 @@ def add_commands(sub):
         command.add_argument("--config", type=Path, required=True)
         command.add_argument("--at", help="Reloj ISO con zona; solo simulación")
     calendar.add_argument("--days", type=int, default=7)
+    from .renderer_cli import add_options
+
+    add_options(cycle)
+    cycle.add_argument("--script", type=Path)
     cycle.add_argument("--output", type=Path, default=Path("out/factory/jobs"))
     cycle.add_argument("--width", type=int, default=1080)
     cycle.add_argument("--height", type=int, default=1920)
@@ -73,8 +77,19 @@ def dispatch(args):
                 else scheduler.upcoming()
             )
         else:
-            value = Factory(store, config, args.output).cycle(
-                clock=clock, width=args.width, height=args.height, fault=args.fault
+            from .renderer_cli import options
+
+            visual = options(args)
+            rendering = visual.pop("renderer_config")
+            value = Factory(
+                store, config, args.output, renderer_config=rendering
+            ).cycle(
+                clock=clock,
+                width=args.width,
+                height=args.height,
+                fault=args.fault,
+                script_path=args.script,
+                **visual,
             )
     elif args.cmd == "metrics":
         store = FactoryStore(args.db)
