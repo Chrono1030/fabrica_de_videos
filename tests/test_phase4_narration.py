@@ -272,3 +272,32 @@ def test_piper_voice_permissions_and_hash_are_independent(tmp_path, monkeypatch)
     model.write_bytes(b"altered")
     with pytest.raises(NarrationBlocked, match="SHA-256"):
         load_voice(cfg)
+
+
+def test_changed_safe_zone_revalidates_cached_captions(tmp_path, monkeypatch):
+    from fabrica import narration_composition
+
+    class StopBeforeRendering:
+        def inputs(self, *args):
+            raise RuntimeError("Stop after subtitle stage; no renderer double output")
+
+    monkeypatch.setattr(
+        narration_composition, "select_renderer", lambda config: StopBeforeRendering()
+    )
+    state = dict(stages={}, events=[])
+    kwargs = dict(
+        job=tmp_path,
+        job_id="test",
+        config=RendererConfig(),
+        narration_config=NarrationConfig(mock_seconds=0.1),
+        state=state,
+        save=save,
+    )
+    with pytest.raises(RuntimeError, match="Stop after subtitle stage"):
+        narration_composition.narrated_stages(board=board(), **kwargs)
+    assert "SUBTITLES" in state["narration_cache"]
+    changed = board().model_copy(
+        update={"safe_area": board().safe_area.model_copy(update={"bottom": 1000})}
+    )
+    with pytest.raises(ValueError, match="safe zone"):
+        narration_composition.narrated_stages(board=changed, **kwargs)

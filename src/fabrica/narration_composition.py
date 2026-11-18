@@ -63,6 +63,8 @@ def narrated_stages(*, board, job, job_id, config, narration_config, state, save
             timeline=timeline.model_dump(mode="json"),
             size=narration_config.subtitle_size,
             margin=narration_config.subtitle_margin,
+            safe_area=adjusted.safe_area.model_dump(),
+            canvas=[adjusted.width, adjusted.height],
         ),
         lambda: write_subtitles(timeline, adjusted, narration_config, job, save),
     )
