@@ -1,4 +1,4 @@
-"""CLI de prototipo. Faltan orquestación y publicación real para el MVP final."""
+"""CLI de la fábrica integrada: producción local y publicación exclusivamente simulada."""
 
 import argparse
 import json
@@ -16,7 +16,7 @@ def load(path: Path) -> VideoScript:
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="fabrica", description="Prototipo de fábrica de videos"
+        prog="fabrica", description="Fábrica local de videos educativos con renderizadores intercambiables"
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
     prod = sub.add_parser("produce", help="Producir MP4 local; no publica")

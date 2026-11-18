@@ -1,0 +1,7 @@
+{
+  "renderer": "givemotion",
+  "runtime_root": ".renderers",
+  "scene_seconds": 8,
+  "timeout_seconds": 1800,
+  "fps": 24
+}

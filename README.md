@@ -1,12 +1,23 @@
 # Fábrica de videos
 
-**Estado:** pipeline audiovisual local de Fase 1 implementado y probado en modo MOCK. **No desplegado; integraciones reales y publicación pendientes.**
+**Estado actual: Fase 3 integrada.** Una aplicación Python con givemotion 0.1.6 por defecto, HyperFrames 0.9.59 opcional, VisualStoryboard general y calendario/metadatos/publicación exclusivamente MOCK. Sin voz por defecto y sin despliegues.
 
-Proyecto para producir automáticamente videos cortos educativos en **español latinoamericano** sobre economía, finanzas personales, hábitos y productividad, inspirados en conceptos generales de libros, pero con guiones originales. El flujo previsto es:
+Guía vigente: [uso y configuración de Fase 3](docs/PHASE3_GIVEMOTION.md), [componentes](docs/PHASE3_COMPONENTS.md) e [inventario legado](docs/PHASE3_LEGACY_INVENTORY.md).
 
-`Programador → catálogo editorial → GPT API (guiones estructurados) → validación → TTS local → escenas SVG/Pillow → composición FFmpeg → control de calidad → API de publicación → registro y alertas`
+```bash
+# Promover únicamente givemotion desde la caché local ya fijada (sin red):
+.venv/bin/python -m fabrica.cli renderer provision --engine givemotion --source experiments/renderer_ab/engines
+# Producción desde el pipeline principal, sin TTS ni publicación real:
+.venv/bin/python -m fabrica.cli produce --mode local --topic 'Costo de oportunidad' --script src/fabrica/data/costo_oportunidad.json --job-id oportunidad --output out/jobs
+```
 
-## Decisiones aprobadas
+HyperFrames se selecciona explícitamente mediante `--renderer-config examples/renderer_hyperframes.json`; solo se provisiona si se utiliza. Los trabajos antiguos conservan su renderer y los nuevos usan givemotion. La opción `--renderer legacy` mantiene el pipeline anterior de Pillow/FFmpeg, sin nuevas plantillas.
+
+Proyecto para producir automáticamente videos cortos educativos en **español latinoamericano** sobre economía, finanzas personales, hábitos y productividad, inspirados en conceptos generales de libros, pero con guiones originales. El flujo vigente de esta fase es:
+
+`Calendario SQLite → catálogo y guion local/MOCK → VisualStoryboard → givemotion o HyperFrames → FFprobe y decodificación → metadatos → publicador YouTube MOCK → métricas`
+
+## Decisiones históricas y objetivo posterior (no activan servicios en Fase 3)
 
 - **Automatización de extremo a extremo**, con bloqueo seguro y alertas cuando haya errores o dudas.
 - **OpenAI API por consumo**, con registro por ejecución y presupuesto inicial de ensayo.
@@ -26,10 +37,10 @@ Proyecto para producir automáticamente videos cortos educativos en **español l
 - `docs/POLITICA_EDITORIAL.md`: originalidad, calidad y comprobación.
 - `docs/IMPLEMENTACION.md`: preparación y secuencia de integración.
 - `docs/ROADMAP.md`: tareas y fases.
-- `src/fabrica/`: prototipo de esquema, validación y tarjetas gráficas.
+- `src/fabrica/`: aplicación Python, planificación, renderizadores, calendario, metadatos y publicación simulada.
 - `examples/guion_demo.json`: guion de prueba estructurado.
 
-## Inicio rápido (prototipo; requiere dependencias locales)
+## Entorno Python y utilidad de tarjetas legado
 
 ```bash
 python -m venv .venv
@@ -40,7 +51,7 @@ python -m fabrica.cli cards examples/guion_demo.json --output out/cards
 pytest -q
 ```
 
-La narración real requiere instalar Piper y un modelo de voz con licencia adecuada. El render local está implementado; la publicación y la validación de integraciones reales siguen pendientes. No incorporar credenciales, tokens OAuth, modelos ni videos al control de versiones.
+La Fase 3 no ejecuta proveedores TTS. La ruta legado conserva Piper y los tonos técnicos anteriores; una voz real requiere auditar primero sus derechos comerciales. La publicación de la fábrica continúa exclusivamente simulada. No incorporar credenciales, tokens OAuth, modelos ni videos al control de versiones.
 
 ## Referencias
 

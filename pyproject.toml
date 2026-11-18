@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fabrica-de-videos"
 version = "0.1.0"
-description = "Prototipo de pipeline de videos educativos sobre economía"
+description = "Fábrica Python de videos educativos con renderizadores nativos intercambiables"
 requires-python = ">=3.11"
 dependencies = ["pydantic>=2.7,<3", "Pillow>=10,<13", "openai>=1.60,<4", "num2words>=0.5.14,<0.6"]
 
