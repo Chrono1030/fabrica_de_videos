@@ -1,0 +1,84 @@
+{
+  "topic": "¿Por qué no te queda dinero a fin de mes?",
+  "title": "¿Por qué no te queda dinero a fin de mes?",
+  "description": "Ejemplo financiero hipotético, educativo y sin recomendación personalizada.",
+  "language": "es-419",
+  "hook": "Imaginá que cobrás $1.200.000. ¿Cuánto te queda?",
+  "disclaimer": "Cifras hipotéticas. No es un presupuesto real ni una recomendación personalizada.",
+  "references": [],
+  "scenes": [
+    {
+      "narration": "Imaginá que cobrás $1.200.000. ¿Cuánto te queda?",
+      "headline": "¿Cuánto te queda?",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Ingreso mensual"
+      ]
+    },
+    {
+      "narration": "Para entenderlo, seguí el recorrido de cada peso",
+      "headline": "El recorrido de cada peso",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Gastos fijos",
+        "Gastos variables",
+        "Ahorro"
+      ]
+    },
+    {
+      "narration": "$700.000 cubren gastos fijos: alquiler, servicios y transporte",
+      "headline": "Primero, los gastos fijos",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Gastos fijos",
+        "Gastos variables",
+        "Ahorro"
+      ]
+    },
+    {
+      "narration": "Otros $380.000 van a gastos variables. Quedan $120.000",
+      "headline": "Lo que queda disponible",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Gastos fijos",
+        "Gastos variables",
+        "Ahorro"
+      ]
+    },
+    {
+      "narration": "¿Y si trasladás $30.000 de gastos variables al ahorro?",
+      "headline": "Una decisión de $30.000",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Gastos fijos",
+        "Gastos variables",
+        "Ahorro"
+      ]
+    },
+    {
+      "narration": "Con el mismo ingreso: $700.000 fijos, $350.000 variables y $150.000 de ahorro",
+      "headline": "Mismo ingreso. Otra distribución.",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Gastos fijos",
+        "Gastos variables",
+        "Ahorro"
+      ]
+    },
+    {
+      "narration": "No ganaste más dinero. Hiciste visible una decisión. ¿Qué parte de tu presupuesto revisarías?",
+      "headline": "Hacer visible una decisión",
+      "visual_type": "concept",
+      "visual_label": "Ejemplo hipotético en ARS",
+      "visual_data": [
+        "Ahorro"
+      ]
+    }
+  ]
+}

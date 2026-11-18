@@ -1,0 +1,581 @@
+{
+  "schema_version": 2,
+  "job_id": null,
+  "video_id": "mente-capital-budget-advanced-55",
+  "title": "¿Por qué no te queda dinero a fin de mes?",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "duration": 55.0,
+  "language": "es-419",
+  "audio": "none",
+  "palette": {
+    "background": "#112037",
+    "surface": "#182B40",
+    "gold": "#E6B864",
+    "ivory": "#F6EEDB",
+    "muted": "#9CB0C4"
+  },
+  "typography": {
+    "family": "DejaVu Sans",
+    "body_px": 40,
+    "heading_px": 68
+  },
+  "safe_area": {
+    "top": 160,
+    "bottom": 260,
+    "left": 80,
+    "right": 80
+  },
+  "budgets": {},
+  "data": {
+    "initial.income": 1200000,
+    "initial.fixed": 700000,
+    "initial.variable": 380000,
+    "initial.savings": 120000,
+    "alternative.income": 1200000,
+    "alternative.fixed": 700000,
+    "alternative.variable": 350000,
+    "alternative.savings": 150000,
+    "decision.amount": 30000
+  },
+  "totals": [
+    {
+      "total_key": "initial.income",
+      "parts": [
+        "initial.fixed",
+        "initial.variable",
+        "initial.savings"
+      ]
+    },
+    {
+      "total_key": "alternative.income",
+      "parts": [
+        "alternative.fixed",
+        "alternative.variable",
+        "alternative.savings"
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene-01",
+      "narrative_segment_id": "mc-budget-seg-01",
+      "start": 0.0,
+      "end": 5.0,
+      "narrative": "Imaginá que cobrás $1.200.000. ¿Cuánto te queda?",
+      "visual_intent": "Importe inicial se transforma en presupuesto",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-1-animate",
+          "at": 0.0,
+          "duration": 3.0,
+          "intent": "Importe inicial se transforma en presupuesto",
+          "elements": [
+            "income"
+          ],
+          "action": "count",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "¿Cuánto te queda?",
+      "caption": "",
+      "layout": "counter",
+      "elements": [
+        {
+          "id": "income",
+          "label": "Ingreso mensual",
+          "value": null,
+          "data_key": "initial.income",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-01",
+          "start": 0.0,
+          "end": 5.0,
+          "text": "Imaginá que cobrás $1.200.000. ¿Cuánto te queda?"
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-02",
+      "narrative_segment_id": "mc-budget-seg-02",
+      "start": 5.0,
+      "end": 12.0,
+      "narrative": "Para entenderlo, seguí el recorrido de cada peso",
+      "visual_intent": "Flujo de dinero hacia categorías",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-2-animate",
+          "at": 0.0,
+          "duration": 3.0,
+          "intent": "Flujo de dinero hacia categorías",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ],
+          "action": "reveal",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "El recorrido de cada peso",
+      "caption": "",
+      "layout": "flow",
+      "elements": [
+        {
+          "id": "fixed",
+          "label": "Gastos fijos",
+          "value": null,
+          "data_key": "initial.fixed",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "muted"
+        },
+        {
+          "id": "variable",
+          "label": "Gastos variables",
+          "value": null,
+          "data_key": "initial.variable",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "ivory"
+        },
+        {
+          "id": "savings",
+          "label": "Ahorro",
+          "value": null,
+          "data_key": "initial.savings",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-02",
+          "start": 5.0,
+          "end": 12.0,
+          "text": "Para entenderlo, seguí el recorrido de cada peso"
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-03",
+      "narrative_segment_id": "mc-budget-seg-03",
+      "start": 12.0,
+      "end": 20.0,
+      "narrative": "$700.000 cubren gastos fijos: alquiler, servicios y transporte",
+      "visual_intent": "Distribución proporcional del ingreso y gastos fijos",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-3-animate",
+          "at": 0.0,
+          "duration": 3.0,
+          "intent": "Distribución proporcional del ingreso y gastos fijos",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ],
+          "action": "reveal",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Primero, los gastos fijos",
+      "caption": "",
+      "layout": "distribution",
+      "elements": [
+        {
+          "id": "fixed",
+          "label": "Gastos fijos",
+          "value": null,
+          "data_key": "initial.fixed",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "muted"
+        },
+        {
+          "id": "variable",
+          "label": "Gastos variables",
+          "value": null,
+          "data_key": "initial.variable",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "ivory"
+        },
+        {
+          "id": "savings",
+          "label": "Ahorro",
+          "value": null,
+          "data_key": "initial.savings",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-03",
+          "start": 12.0,
+          "end": 20.0,
+          "text": "$700.000 cubren gastos fijos: alquiler, servicios y transporte"
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-04",
+      "narrative_segment_id": "mc-budget-seg-04",
+      "start": 20.0,
+      "end": 28.0,
+      "narrative": "Otros $380.000 van a gastos variables. Quedan $120.000",
+      "visual_intent": "Presupuesto completo y margen restante",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-4-animate",
+          "at": 0.0,
+          "duration": 3.0,
+          "intent": "Presupuesto completo y margen restante",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ],
+          "action": "grow",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Lo que queda disponible",
+      "caption": "",
+      "layout": "bars",
+      "elements": [
+        {
+          "id": "fixed",
+          "label": "Gastos fijos",
+          "value": null,
+          "data_key": "initial.fixed",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "muted"
+        },
+        {
+          "id": "variable",
+          "label": "Gastos variables",
+          "value": null,
+          "data_key": "initial.variable",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "ivory"
+        },
+        {
+          "id": "savings",
+          "label": "Ahorro",
+          "value": null,
+          "data_key": "initial.savings",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-04",
+          "start": 20.0,
+          "end": 28.0,
+          "text": "Otros $380.000 van a gastos variables. Quedan $120.000"
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-05",
+      "narrative_segment_id": "mc-budget-seg-05",
+      "start": 28.0,
+      "end": 37.0,
+      "narrative": "¿Y si trasladás $30.000 de gastos variables al ahorro?",
+      "visual_intent": "Transferencia entre categorías conservando el total",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings",
+        "transfer"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-5-animate",
+          "at": 1.5,
+          "duration": 5.0,
+          "intent": "Transferencia entre categorías conservando el total",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ],
+          "action": "transfer",
+          "from_id": "variable",
+          "to_id": "savings",
+          "amount": null,
+          "amount_key": "decision.amount"
+        }
+      ],
+      "title": "Una decisión de $30.000",
+      "caption": "",
+      "layout": "transfer",
+      "elements": [
+        {
+          "id": "fixed",
+          "label": "Gastos fijos",
+          "value": null,
+          "data_key": "initial.fixed",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "muted"
+        },
+        {
+          "id": "variable",
+          "label": "Gastos variables",
+          "value": null,
+          "data_key": "initial.variable",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "ivory"
+        },
+        {
+          "id": "savings",
+          "label": "Ahorro",
+          "value": null,
+          "data_key": "initial.savings",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-05",
+          "start": 28.0,
+          "end": 37.0,
+          "text": "¿Y si trasladás $30.000 de gastos variables al ahorro?"
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-06",
+      "narrative_segment_id": "mc-budget-seg-06",
+      "start": 37.0,
+      "end": 46.0,
+      "narrative": "Con el mismo ingreso: $700.000 fijos, $350.000 variables y $150.000 de ahorro",
+      "visual_intent": "Transformación y comparación antes/después",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-6-animate",
+          "at": 0.0,
+          "duration": 3.0,
+          "intent": "Transformación y comparación antes/después",
+          "elements": [
+            "fixed",
+            "variable",
+            "savings"
+          ],
+          "action": "compare",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Mismo ingreso. Otra distribución.",
+      "caption": "",
+      "layout": "comparison",
+      "elements": [
+        {
+          "id": "fixed",
+          "label": "Gastos fijos",
+          "value": null,
+          "data_key": "alternative.fixed",
+          "initial_value": null,
+          "initial_key": "initial.fixed",
+          "format": "currency",
+          "unit": "",
+          "color_role": "muted"
+        },
+        {
+          "id": "variable",
+          "label": "Gastos variables",
+          "value": null,
+          "data_key": "alternative.variable",
+          "initial_value": null,
+          "initial_key": "initial.variable",
+          "format": "currency",
+          "unit": "",
+          "color_role": "ivory"
+        },
+        {
+          "id": "savings",
+          "label": "Ahorro",
+          "value": null,
+          "data_key": "alternative.savings",
+          "initial_value": null,
+          "initial_key": "initial.savings",
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-06",
+          "start": 37.0,
+          "end": 46.0,
+          "text": "Con el mismo ingreso: $700.000 fijos, $350.000 variables y $150.000 de ahorro"
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-07",
+      "narrative_segment_id": "mc-budget-seg-07",
+      "start": 46.0,
+      "end": 55.0,
+      "narrative": "No ganaste más dinero. Hiciste visible una decisión. ¿Qué parte de tu presupuesto revisarías?",
+      "visual_intent": "Conclusión relacionada con las cifras anteriores",
+      "semantic_elements": [
+        "income",
+        "fixed",
+        "variable",
+        "savings"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-7-animate",
+          "at": 0.0,
+          "duration": 3.0,
+          "intent": "Conclusión relacionada con las cifras anteriores",
+          "elements": [
+            "savings"
+          ],
+          "action": "compare",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Hacer visible una decisión",
+      "caption": "",
+      "layout": "comparison",
+      "elements": [
+        {
+          "id": "savings",
+          "label": "Ahorro",
+          "value": null,
+          "data_key": "alternative.savings",
+          "initial_value": null,
+          "initial_key": "initial.savings",
+          "format": "currency",
+          "unit": "",
+          "color_role": "gold"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "mc-budget-seg-07",
+          "start": 46.0,
+          "end": 55.0,
+          "text": "No ganaste más dinero. Hiciste visible una decisión. ¿Qué parte de tu presupuesto revisarías?"
+        }
+      ],
+      "transition": "settle"
+    }
+  ],
+  "source_metadata": {
+    "origin": "Regression migrated from advanced 55-second storyboard; seven exact texts and times preserved",
+    "disclaimer": "Cifras hipotéticas. No es un presupuesto real ni una recomendación personalizada.",
+    "currency": "ARS",
+    "tts_status": "pending; segment IDs reserved; no phonetic alignment"
+  }
+}

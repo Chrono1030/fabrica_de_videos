@@ -1,0 +1,374 @@
+{
+  "schema_version": 2,
+  "job_id": null,
+  "video_id": "time-opportunity",
+  "title": "Lo que dejás de elegir también cuenta",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "duration": 40.0,
+  "language": "es-419",
+  "audio": "none",
+  "palette": {
+    "background": "#112037",
+    "surface": "#182B40",
+    "gold": "#E6B864",
+    "ivory": "#F6EEDB",
+    "muted": "#9CB0C4"
+  },
+  "typography": {
+    "family": "DejaVu Sans",
+    "heading_px": 68,
+    "body_px": 40
+  },
+  "safe_area": {
+    "top": 160,
+    "bottom": 260,
+    "left": 80,
+    "right": 80
+  },
+  "budgets": {},
+  "data": {
+    "scene-03.value-0": 2.0,
+    "scene-03.value-1": 2.0
+  },
+  "totals": [],
+  "scenes": [
+    {
+      "id": "scene-01",
+      "narrative_segment_id": "segment-01",
+      "start": 0.0,
+      "end": 8.0,
+      "narrative": "¿Y si una tarde libre también tuviera un costo? No hablamos de una factura. Cada vez que elegimos algo, dejamos otra posibilidad afuera. Reconocerla ayuda a decidir con más claridad.",
+      "visual_intent": "Ejemplo hipotético",
+      "semantic_elements": [
+        "item-1",
+        "item-2"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-01-build",
+          "at": 0.0,
+          "duration": 3.2,
+          "intent": "Ejemplo hipotético",
+          "elements": [
+            "item-1",
+            "item-2"
+          ],
+          "action": "reveal",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Tu tiempo también cuenta",
+      "caption": "Ejemplo hipotético",
+      "layout": "cards",
+      "elements": [
+        {
+          "id": "item-1",
+          "label": "Tiempo",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "gold"
+        },
+        {
+          "id": "item-2",
+          "label": "Elección",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "ivory"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "segment-01",
+          "start": 0.0,
+          "end": 8.0,
+          "text": "¿Y si una tarde libre también tuviera un costo? No hablamos de una factura. Cada vez que elegimos algo, dejamos otra posibilidad afuera. Reconocerla ayuda a decidir con más claridad."
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-02",
+      "narrative_segment_id": "segment-02",
+      "start": 8.0,
+      "end": 16.0,
+      "narrative": "El costo de oportunidad es el valor de la mejor alternativa que dejamos pasar. No es la suma de todas las opciones. Y tampoco tiene que medirse en dinero: puede ser descanso, aprendizaje o tiempo compartido.",
+      "visual_intent": "Ejemplo hipotético",
+      "semantic_elements": [
+        "item-1",
+        "item-2"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-02-build",
+          "at": 0.0,
+          "duration": 3.2,
+          "intent": "Ejemplo hipotético",
+          "elements": [
+            "item-1",
+            "item-2"
+          ],
+          "action": "reveal",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "La mejor alternativa",
+      "caption": "Ejemplo hipotético",
+      "layout": "flow",
+      "elements": [
+        {
+          "id": "item-1",
+          "label": "Elegir",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "gold"
+        },
+        {
+          "id": "item-2",
+          "label": "Renunciar",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "ivory"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "segment-02",
+          "start": 8.0,
+          "end": 16.0,
+          "text": "El costo de oportunidad es el valor de la mejor alternativa que dejamos pasar. No es la suma de todas las opciones. Y tampoco tiene que medirse en dinero: puede ser descanso, aprendizaje o tiempo compartido."
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-03",
+      "narrative_segment_id": "segment-03",
+      "start": 16.0,
+      "end": 24.0,
+      "narrative": "Imaginá este ejemplo hipotético: tenés dos horas libres y podés usarlas para hacer un curso o para visitar a una amiga. Si elegís el curso, el costo de oportunidad es el encuentro que dejás pasar, si era tu mejor alternativa.",
+      "visual_intent": "Ejemplo hipotético",
+      "semantic_elements": [
+        "item-1",
+        "item-2"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-03-build",
+          "at": 0.0,
+          "duration": 3.2,
+          "intent": "Ejemplo hipotético",
+          "elements": [
+            "item-1",
+            "item-2"
+          ],
+          "action": "grow",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Una tarde, dos opciones",
+      "caption": "Ejemplo hipotético",
+      "layout": "bars",
+      "elements": [
+        {
+          "id": "item-1",
+          "label": "Curso",
+          "value": null,
+          "data_key": "scene-03.value-0",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "gold"
+        },
+        {
+          "id": "item-2",
+          "label": "Visita",
+          "value": null,
+          "data_key": "scene-03.value-1",
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "ivory"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "segment-03",
+          "start": 16.0,
+          "end": 24.0,
+          "text": "Imaginá este ejemplo hipotético: tenés dos horas libres y podés usarlas para hacer un curso o para visitar a una amiga. Si elegís el curso, el costo de oportunidad es el encuentro que dejás pasar, si era tu mejor alternativa."
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-04",
+      "narrative_segment_id": "segment-04",
+      "start": 24.0,
+      "end": 32.0,
+      "narrative": "Si elegís la visita, resignás ese tiempo de aprendizaje. Ninguna opción es siempre superior. La decisión depende de tus prioridades y de lo que necesitás hoy. Incluso descansar puede ser la alternativa más valiosa después de una semana agotadora.",
+      "visual_intent": "Ejemplo hipotético",
+      "semantic_elements": [
+        "item-1",
+        "item-2"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-04-build",
+          "at": 0.0,
+          "duration": 3.2,
+          "intent": "Ejemplo hipotético",
+          "elements": [
+            "item-1",
+            "item-2"
+          ],
+          "action": "compare",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Depende de tus prioridades",
+      "caption": "Ejemplo hipotético",
+      "layout": "comparison",
+      "elements": [
+        {
+          "id": "item-1",
+          "label": "Aprender",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "gold"
+        },
+        {
+          "id": "item-2",
+          "label": "Compartir",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "ivory"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "segment-04",
+          "start": 24.0,
+          "end": 32.0,
+          "text": "Si elegís la visita, resignás ese tiempo de aprendizaje. Ninguna opción es siempre superior. La decisión depende de tus prioridades y de lo que necesitás hoy. Incluso descansar puede ser la alternativa más valiosa después de una semana agotadora."
+        }
+      ],
+      "transition": "settle"
+    },
+    {
+      "id": "scene-05",
+      "narrative_segment_id": "segment-05",
+      "start": 32.0,
+      "end": 40.0,
+      "narrative": "Antes de decidir, preguntate: ¿qué elijo y cuál es la mejor opción que dejo afuera? Compará sus beneficios y sus límites. No necesitás calcularlo todo; alcanza con hacer visible el intercambio. Elegir mejor empieza por reconocer a qué estás renunciando.",
+      "visual_intent": "Ejemplo hipotético",
+      "semantic_elements": [
+        "item-1",
+        "item-2"
+      ],
+      "quantitative_data": {},
+      "events": [
+        {
+          "id": "scene-05-build",
+          "at": 0.0,
+          "duration": 3.2,
+          "intent": "Ejemplo hipotético",
+          "elements": [
+            "item-1",
+            "item-2"
+          ],
+          "action": "reveal",
+          "from_id": null,
+          "to_id": null,
+          "amount": null,
+          "amount_key": null
+        }
+      ],
+      "title": "Hacé visible el intercambio",
+      "caption": "Ejemplo hipotético",
+      "layout": "cards",
+      "elements": [
+        {
+          "id": "item-1",
+          "label": "¿Qué elijo?",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "gold"
+        },
+        {
+          "id": "item-2",
+          "label": "¿Qué dejo pasar?",
+          "value": null,
+          "data_key": null,
+          "initial_value": null,
+          "initial_key": null,
+          "format": "number",
+          "unit": "",
+          "color_role": "ivory"
+        }
+      ],
+      "anchors": [
+        {
+          "id": "segment-05",
+          "start": 32.0,
+          "end": 40.0,
+          "text": "Antes de decidir, preguntate: ¿qué elijo y cuál es la mejor opción que dejo afuera? Compará sus beneficios y sus límites. No necesitás calcularlo todo; alcanza con hacer visible el intercambio. Elegir mejor empieza por reconocer a qué estás renunciando."
+        }
+      ],
+      "transition": "settle"
+    }
+  ],
+  "source_metadata": {
+    "brand": "Mente y Capital",
+    "origin": "Factory VideoScript; deterministic visual planner v2",
+    "disclaimer": "Contenido educativo. Situación hipotética, sin recomendaciones de inversión.",
+    "tts_status": "pending; narrative anchors are planned, not phonetic alignment"
+  }
+}
