@@ -20,7 +20,10 @@ def write_subtitles(timeline, board, config, job, save):
     from .cards import font
 
     style = SubtitleStyle(
-        size=config.subtitle_size, margin=config.subtitle_margin, color="F6EEDB"
+        size=config.subtitle_size,
+        margin=config.subtitle_margin,
+        color="F6EEDB",
+        outline=3,
     )
     safe = board.safe_area
     # ASS uses a fixed logical canvas, matching the existing visual components.

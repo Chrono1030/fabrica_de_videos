@@ -11,6 +11,7 @@ from .audio_providers import (
     NarrationBlocked,
     create_audio_provider,
     inspect_wav,
+    narration_implementation,
 )
 from .narration_timeline import (
     NarrationTimeline,
@@ -35,8 +36,16 @@ class NarrationStages:
         self.job, self.state, self.save = Path(job).resolve(), state, save
         self.cache = state.setdefault("narration_cache", {})
 
+    def token(self, name, inputs):
+        # Visual inputs already fingerprint the renderer; audio code changes alone
+        # must not invalidate a visually identical silent video.
+        implementation = (
+            None if name == "VIDEO_RENDERED" else narration_implementation()
+        )
+        return signature(dict(inputs=inputs, implementation=implementation))
+
     def run(self, name, outputs, inputs, action):
-        token = signature(inputs)
+        token = self.token(name, inputs)
         previous = self.cache.get(name)
         if (
             previous

@@ -2,6 +2,7 @@
 
 import hashlib
 import math
+import re
 from pathlib import Path
 from typing import Literal
 
@@ -19,7 +20,20 @@ def text_hash(text):
 def plan_narration(board, currency=None):
     requests = []
     for scene in board.scenes:
-        phrases = cues(scene.narrative)
+        phrases = []
+        for sentence in re.split(r"(?<=[.!?])\s+(?=[¿¡A-ZÁÉÍÓÚÑ])", scene.narrative):
+            if len(cues(sentence)) <= 1:
+                phrases.extend(cues(sentence))
+                continue
+            current = ""
+            for clause in re.split(r"(?<=[,;:])\s+", sentence):
+                combined = (current + " " + clause).strip()
+                if current and len(cues(combined)) > 1:
+                    phrases.extend(cues(current))
+                    current = clause
+                else:
+                    current = combined
+            phrases.extend(cues(current))
         if not phrases:
             raise ValueError("Empty narrative segment")
         for index, subtitle in enumerate(phrases, 1):
@@ -251,7 +265,7 @@ def retime_storyboard(board, timeline):
     data["source_metadata"]["narrative_mode"] = "burned_subtitles"
     data["source_metadata"]["narration_alignment"] = timeline.alignment
     if timeline.audio_is_mock:
-        data["source_metadata"]["audio_notice"] = "AUDIO MOCK · TONOS, SIN VOZ"
+        data["source_metadata"]["audio_notice"] = "AUDIO MOCK"
     result = VisualStoryboard.model_validate(data)
     if not math.isclose(result.duration, timeline.duration, abs_tol=1e-8):
         raise ValueError("Visual and audio timeline disagree")

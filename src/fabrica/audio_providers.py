@@ -45,6 +45,21 @@ class NarrationBlocked(ValueError):
         super().__init__(f"{code}: {message}")
 
 
+def narration_implementation():
+    root = Path(__file__).parent
+    names = [
+        "audio_providers.py",
+        "tts.py",
+        "normalization.py",
+        "narration_audio.py",
+        "narration_timeline.py",
+        "narration_subtitles.py",
+        "narration_composition.py",
+        "subtitle_style.py",
+    ]
+    return {name: sha(root / name) for name in names}
+
+
 class NarrationConfig(Contract):
     model_config = ConfigDict(
         extra="forbid", frozen=True, allow_inf_nan=False, validate_default=True
@@ -81,6 +96,7 @@ class NarrationConfig(Contract):
 
     def identity(self):
         data = self.model_dump(mode="json")
+        data["implementation_sha256"] = narration_implementation()
         data["manifest_hashes"] = {
             str(p): sha(p) if p.is_file() else None
             for p in [self.voice_manifest, self.external_manifest]

@@ -46,7 +46,9 @@ def narrated_stages(*, board, job, job_id, config, narration_config, state, save
         ):
             raise ValueError("Packaged renderer inputs changed; create a new job")
         planned = plan_narration(board, narration_config.currency)
-        if stages.cache.get("NARRATION_PLAN", {}).get("input") != signature(planned):
+        if stages.cache.get("NARRATION_PLAN", {}).get("input") != stages.token(
+            "NARRATION_PLAN", planned
+        ):
             raise ValueError("Packaged narration text changed; create a new job")
     adjusted, timeline = prepare_narration(
         board, job, job_id, narration_config, config, stages, save
