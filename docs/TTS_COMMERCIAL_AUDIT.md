@@ -1,3 +1,5 @@
+> Actualización Fase 4 (2026-11-18): ver [auditoría vigente](PHASE4_VOICE_AUDIT.md) y [registro estructurado](PHASE4_VOICE_AUDIT.json). Este informe anterior se conserva como antecedente; ninguna voz queda habilitada por el nombre o la licencia del motor.
+
 # Voz comercial: evaluación acotada, todavía bloqueada
 
 Revisión 17/11/2026. No se descargaron pesos ni voces adicionales. No hay permiso

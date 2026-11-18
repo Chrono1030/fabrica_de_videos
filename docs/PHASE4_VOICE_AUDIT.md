@@ -1,0 +1,22 @@
+# Revisión documental de voces — Fase 4
+
+Fecha: 2026-11-18. Resultado operativo: **BLOCKED_VOICE_RIGHTS** para la prueba B. Ninguna voz es-419 queda APPROVED. No se proporcionó una grabación autorizada. El ensayo A utiliza tonos MOCK originales y no representa narración humana.
+
+[Registro estructurado](PHASE4_VOICE_AUDIT.json): versiones del motor, tarjetas observadas, procedencia, licencias declaradas, cadena de entrenamiento, obligaciones, restricciones y decisión por candidato. Los SHA locales son `null`: no se descargaron pesos ni embeddings. Las revisiones de tarjetas NO identifican una copia local de los pesos. Esta ausencia impide aprobar un checkpoint, en lugar de sustituir su hash por el de documentación.
+
+Piper instalado: **1.8.0**, GPL-3.0-or-later. La [documentación del proyecto sobre licencias](https://raw.githubusercontent.com/OHF-Voice/piper1-gpl/main/docs/LICENSING.md) distingue el motor de las voces y explica que debe seguirse la cadena de bases/datasets. El permiso técnico no implica permiso comercial ni calidad auditiva aprobada.
+
+| Candidato | Evidencia actual | Decisión de esta aplicación |
+| --- | --- | --- |
+| es_AR-daniela-high | [Tarjeta 9f967d1](https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_AR/daniela/high/MODEL_CARD): OpenSLR61 CC BY-SA 4.0; deriva de Lessac high | BLOCKED: cadena restrictiva y checkpoint sin verificar. Conservar atribución y evaluar alcance ShareAlike no resuelve la base. |
+| es_MX-ald-medium | [Tarjeta 4a409e3](https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_MX/ald/medium/MODEL_CARD): Unlicense, ahora rdh CC0 | BLOCKED: procedencia del dataset y permiso del hablante sin resolver. |
+| es_MX-ald-x_low | [Tarjeta e21c7de](https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_MX/ald/x_low/MODEL_CARD): audio sintético desde ald original | BLOCKED: la cadena de la copia original no se actualiza por el nombre del medium actual. |
+| es_MX-claude-high | [Tarjeta bae641d](https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_MX/claude/high/MODEL_CARD): enlaza Space con Apache-2.0; no especifica base | BLOCKED: faltan derechos individuales y cadena completa. Conservar licencia/NOTICE no basta. |
+| es_ES-davefx-medium | [Tarjeta cf910fb](https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_ES/davefx/medium/MODEL_CARD): CC0 y base rdh CC0 | RESEARCH_ONLY: variante incorrecta para es-419 y pesos no verificados; no se ejecuta ni sustituye automáticamente. |
+| es_ES-carlfm-x_low | [Tarjeta 2f8dbe0](https://huggingface.co/rhasspy/piper-voices/blob/main/es/es_ES/carlfm/x_low/MODEL_CARD): dominio público, desde cero | RESEARCH_ONLY: misma restricción regional y ausencia de checkpoint verificado. |
+
+La [guía comercial actual de Piper](https://raw.githubusercontent.com/OHF-Voice/piper1-gpl/main/docs/COMMERCIAL_USE.md) advierte que los reentrenamientos conservan nombres y que las copias anteriores no quedan habilitadas. Además excluye expresamente ald-medium por dudas sobre los derechos del cargador sobre las grabaciones, pese al cambio a rdh y la etiqueta Unlicense. Davefx y carlfm figuran con cadenas permisivas, pero eso no cambia su variante es_ES. Son hechos nuevos que deben conservarse separados de la decisión local de aprobación.
+
+Kokoro no se instaló. Su [código examinado declara 0.9.4](https://github.com/hexgrad/kokoro/blob/main/pyproject.toml). Los pesos [Kokoro-82M v1.0 declaran Apache-2.0](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/README.md), describen fuentes sintéticas/permisivas y atribuciones CC BY aplicables a ciertos datos. Esto no documenta una cadena individual completa para las voces españolas examinadas. [VOICES.md, revisión observada c3327e9](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md) enumera **ef_dora, em_alex y em_santa** como español, sin acreditar es-419 por voz. Las tres quedan BLOCKED para esta aplicación. No se interpreta una tabla de calidad como aprobación humana propia.
+
+Para desbloquear B: seleccionar una versión concreta; aportar pesos/config/sidecar y hashes, origen y cadena completa verificable; obtener autorización de prueba y comercial por separado; confirmar región y revisar pronunciación. `VoiceManifest` conserva las validaciones comerciales previas y añade permisos técnicos/de prueba explícitos. Para grabaciones externas, el propietario debe declarar procedencia, autorización, transcripción y hash de cada segmento. Su mera existencia no concede derechos comerciales.

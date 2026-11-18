@@ -213,3 +213,12 @@ y registros de viabilidad forman parte de esta misma aplicación. Ver
 [licencias TTS](docs/TTS_COMMERCIAL_AUDIT.md) y
 [modelo económico](docs/VIABILITY.md). No se requiere n8n ni credenciales para
 `fabrica cycle`. La publicación real y pública sigue deshabilitada.
+
+### Fase 4: audio medido y subtítulos
+
+`produce` y `cycle` aceptan `--narration-config examples/narration_mock.json` para
+crear audio MOCK por frase, retimar el storyboard y quemar subtítulos en H.264/AAC.
+[Configuración, recuperación y evidencias](docs/PHASE4_TTS_INTEGRATION.md).
+[Auditoría de voces actualizada](docs/PHASE4_VOICE_AUDIT.md): la narración real sigue
+bloqueada hasta contar con derechos y versión verificables. La publicación sigue
+siendo exclusivamente simulada.
