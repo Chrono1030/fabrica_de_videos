@@ -79,16 +79,33 @@ def _piper_worker(connection, model, scale):
 
 
 class PiperTTS:
-    def __init__(self):
+    def __init__(
+        self,
+        *,
+        model=None,
+        scale=None,
+        timeout=None,
+        currency=None,
+        normalized=False,
+        api_only=False,
+    ):
+        self.currency, self.normalized, self.api_only = currency, normalized, api_only
         self.model = Path(
-            os.getenv("PIPER_VOICE_MODEL")
+            model
             or (
-                Path(os.getenv("PIPER_MODELS_DIR", "out/models"))
-                / (os.getenv("PIPER_VOICE", "es_MX-ald-medium") + ".onnx")
+                os.getenv("PIPER_VOICE_MODEL")
+                or (
+                    Path(os.getenv("PIPER_MODELS_DIR", "out/models"))
+                    / (os.getenv("PIPER_VOICE", "es_MX-ald-medium") + ".onnx")
+                )
             )
         )
-        self.scale = float(os.getenv("PIPER_LENGTH_SCALE", "1"))
-        self.timeout = float(os.getenv("PIPER_TIMEOUT", "180"))
+        self.scale = float(
+            scale if scale is not None else os.getenv("PIPER_LENGTH_SCALE", "1")
+        )
+        self.timeout = float(
+            timeout if timeout is not None else os.getenv("PIPER_TIMEOUT", "180")
+        )
         if not math.isfinite(self.scale) or not 0.5 <= self.scale <= 2:
             raise ValueError("PIPER_LENGTH_SCALE debe estar entre 0.5 y 2")
         if not math.isfinite(self.timeout) or self.timeout <= 0:
@@ -117,11 +134,15 @@ class PiperTTS:
             or manifest.get("approved_local_use") is not True
         ):
             raise RuntimeError("Licencia no verificada para este modelo")
-        normalized = normalize(text, os.getenv("NARRATION_CURRENCY"))
+        normalized = (
+            text
+            if self.normalized
+            else normalize(text, self.currency or os.getenv("NARRATION_CURRENCY"))
+        )
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(".partial.wav")
         try:
-            if os.getenv("PIPER_EXECUTABLE"):
+            if not self.api_only and os.getenv("PIPER_EXECUTABLE"):
                 # Compatibilidad con ejecutables configurados en instalaciones anteriores.
                 subprocess.run(
                     [

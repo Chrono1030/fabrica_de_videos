@@ -5,7 +5,7 @@ from datetime import date
 
 from num2words import num2words
 
-NUMBER = r"\d+(?:[.,]\d+)*"
+NUMBER = r"[−-]?\d+(?:[.,]\d+)*"
 MONTHS = (
     "enero febrero marzo abril mayo junio julio agosto septiembre octubre "
     "noviembre diciembre"
@@ -13,6 +13,9 @@ MONTHS = (
 
 
 def number(value: str) -> str:
+    value = value.replace("−", "-")
+    if value.startswith("-"):
+        return "menos " + number(value[1:])
     if "," in value and "." in value:
         value = (
             value.replace(".", "")
@@ -40,6 +43,9 @@ def normalize(text: str, currency: str | None = None) -> str:
         return f"{number(str(day))} de {MONTHS[month - 1]} de {number(str(year))}"
 
     text = re.sub(r"\b(\d{1,2})/(\d{1,2})/(\d{4})\b", verbal_date, text)
+    # Normalize sign placement before reading currencies; never assume the currency of $.
+    text = re.sub(r"([−-])\s*\$", r"$\1", text)
+    text = re.sub(r"\b(ARS|USD)\s*([−-])\s*\$", r"\1 $\2", text)
     currencies = {"ARS": "pesos argentinos", "USD": "dólares estadounidenses"}
     text = re.sub(
         rf"\b(ARS|USD)\s*\$?\s*({NUMBER})",
@@ -61,7 +67,9 @@ def normalize(text: str, currency: str | None = None) -> str:
         )
         if "$" in text:
             raise ValueError("Importe monetario inválido")
-    text = re.sub(rf"({NUMBER})\s*%", lambda m: number(m[1]) + " por ciento", text)
+    text = re.sub(
+        rf"(?<![\w.,])({NUMBER})\s*%", lambda m: number(m[1]) + " por ciento", text
+    )
     for short, full in {
         "PIB": "producto interno bruto",
         "PBI": "producto bruto interno",

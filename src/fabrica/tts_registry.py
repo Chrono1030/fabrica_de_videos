@@ -31,6 +31,13 @@ class VoiceManifest(Contract):
     reviewed_at: str | None = None
     listening_approved: bool = False
     commercial_approved: bool = False
+    # Separate execution permission, rights research and listening review.
+    technical_execution_allowed: bool = False
+    test_use_authorized: bool = False
+    rights_status: Literal["APPROVED", "RESEARCH_ONLY", "BLOCKED"] = "BLOCKED"
+    source_url: str | None = None
+    attribution: list[str] = []
+    restrictions: list[str] = []
 
     @model_validator(mode="after")
     def approval_needs_evidence(self):

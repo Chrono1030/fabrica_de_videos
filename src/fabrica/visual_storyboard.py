@@ -36,6 +36,7 @@ class VisualElement(StrictModel):
     label: str = Field(min_length=1, max_length=80)
     value: float | str | None = None
     data_key: str | None = None
+    narration_anchor: str | None = None
     initial_value: float | None = None
     initial_key: str | None = None
     format: Literal["number", "currency", "percent", "text"] = "number"
@@ -198,6 +199,14 @@ class VisualStoryboard(StrictModel):
                 raise ValueError("Scene boundaries must align to frames")
             if scene.layout == "counter" and len(scene.elements) > 2:
                 raise ValueError("Counter layout supports one or two primary numbers")
+            anchor_set = {a.id for a in scene.anchors}
+            if any(
+                e.narration_anchor and e.narration_anchor not in anchor_set
+                for e in scene.elements
+            ):
+                raise ValueError(
+                    "Visual element references an unknown narration anchor"
+                )
             ids = {e.id for e in scene.elements}
             if len(ids) != len(scene.elements):
                 raise ValueError("Duplicate visual element ID")
